@@ -1,0 +1,106 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Created by Otajonov Quvonchbek",
+        "contact": {}
+    },
+    "paths": {
+        "/v1/create-zikr": {
+            "post": {
+                "description": "This api can create new zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Create zikr",
+                "parameters": [
+                    {
+                        "description": "Create",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikr"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/get-all-zikr": {
+            "get": {
+                "description": "This api can get all zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Get all zikr",
+                "responses": {
+                    "200": {
+                        "description": "Created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikrs"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.Zikr": {
+            "type": "object",
+            "properties": {
+                "arabic": {
+                    "type": "string"
+                },
+                "pronounce": {
+                    "type": "string"
+                },
+                "uzbek": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Zikrs": {
+            "type": "object",
+            "properties": {
+                "zikrs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Zikr"
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

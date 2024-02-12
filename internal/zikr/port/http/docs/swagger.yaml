@@ -1,0 +1,68 @@
+definitions:
+  model.Zikr:
+    properties:
+      arabic:
+        type: string
+      pronounce:
+        type: string
+      uzbek:
+        type: string
+    type: object
+  model.Zikrs:
+    properties:
+      zikrs:
+        items:
+          $ref: '#/definitions/model.Zikr'
+        type: array
+    type: object
+info:
+  contact: {}
+  description: Created by Otajonov Quvonchbek
+paths:
+  /v1/create-zikr:
+    post:
+      consumes:
+      - application/json
+      description: This api can create new zikr
+      parameters:
+      - description: Create
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Zikr'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create zikr
+      tags:
+      - Zikr
+  /v1/get-all-zikr:
+    get:
+      consumes:
+      - application/json
+      description: This api can get all zikr
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created successfully
+          schema:
+            $ref: '#/definitions/model.Zikrs'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get all zikr
+      tags:
+      - Zikr
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
