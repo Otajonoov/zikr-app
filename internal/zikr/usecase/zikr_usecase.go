@@ -43,7 +43,7 @@ func (z zikrUsecase) GetAll() (zikrs []*domain.ZikrWithId, err error) {
 	return zikrs, nil
 }
 
-func (z zikrUsecase) Update(zikr *domain.Zikr) error {
+func (z zikrUsecase) Update(zikr *domain.ZikrWithId) error {
 	err := z.repo.Update(zikr)
 	if err != nil {
 		return err

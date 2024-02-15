@@ -18,8 +18,8 @@ func NewZikrController(service domain.ZikrUsecase) *ZikrController {
 
 type ZikrHandler interface {
 	Create(ctx *gin.Context)
-	//Get(ctx *gin.Context)
+	Get(ctx *gin.Context)
 	GetAll(ctx *gin.Context)
-	//Update(ctx *gin.Context)
+	Update(ctx *gin.Context)
 	//Delete(ctx *gin.Context)
 }

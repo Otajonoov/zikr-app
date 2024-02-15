@@ -30,6 +30,44 @@
                     }
                 ],
                 "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Id"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/delete-zikr": {
+            "delete": {
+                "description": "This api can delete zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Delete zikr",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -67,9 +105,119 @@
                     }
                 }
             }
+        },
+        "/v1/get-zikr": {
+            "get": {
+                "description": "This api can get by ID zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Get by ID zikr",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikr"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/update-zikr": {
+            "put": {
+                "description": "This api can update zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Update zikr",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Create",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikr"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Id"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "model.GetZikr": {
+            "type": "object",
+            "properties": {
+                "arabic": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "pronounce": {
+                    "type": "string"
+                },
+                "uzbek": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Id": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Zikr": {
             "type": "object",
             "properties": {
@@ -90,7 +238,7 @@
                 "zikrs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.Zikr"
+                        "$ref": "#/definitions/model.GetZikr"
                     }
                 }
             }

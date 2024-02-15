@@ -45,7 +45,7 @@ type ZikrRepo interface {
 	Create(zikr *Zikr) (id string, err error)
 	Get(id string) (zikr *Zikr, err error)
 	GetAll() (zikrs []*ZikrWithId, err error)
-	Update(zikr *Zikr) error
+	Update(zikr *ZikrWithId) error
 	Delete(id string) error
 }
 
@@ -53,6 +53,6 @@ type ZikrUsecase interface {
 	Create(zikr *Zikr) (id string, err error)
 	Get(id string) (zikr *Zikr, err error)
 	GetAll() (zikrs []*ZikrWithId, err error)
-	Update(zikr *Zikr) error
+	Update(zikr *ZikrWithId) error
 	Delete(id string) error
 }

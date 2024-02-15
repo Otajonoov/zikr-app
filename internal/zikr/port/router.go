@@ -44,10 +44,10 @@ func New(option RouterOption) *gin.Engine {
 
 	// Zikr
 	api.POST("/create-zikr", controller.Create)
-	//api.GET("/get-zikr", controller.Get)
+	api.GET("/get-zikr", controller.Get)
 	api.GET("/get-all-zikr", controller.GetAll)
-	//api.PUT("/update-zikr", controller.Update)
-	//api.DELETE("/delete-zikr", controller.Delete)
+	api.PUT("/update-zikr", controller.Update)
+	api.DELETE("/delete-zikr", controller.Delete)
 
 	url := ginSwagger.URL("/v1/swagger/doc.json")
 	api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

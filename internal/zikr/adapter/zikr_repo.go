@@ -72,7 +72,7 @@ func (z *zikrRepo) Get(id string) (zikr *domain.Zikr, err error) {
 		return &domain.Zikr{}, err
 	}
 
-	newZikr := z.factory.ParseToDomain(zikrRes.arabic, zikrRes.uzbek, zikrRes.pronounce)
+	newZikr := z.factory.ParseToController(zikrRes.arabic, zikrRes.uzbek, zikrRes.pronounce)
 
 	return newZikr, nil
 }
@@ -122,7 +122,7 @@ func (z *zikrRepo) GetAll() (zikrs []*domain.ZikrWithId, err error) {
 	return zikrs, nil
 }
 
-func (z *zikrRepo) Update(zikr *domain.Zikr) error {
+func (z *zikrRepo) Update(zikr *domain.ZikrWithId) error {
 	query := `
 		UPDATE zikr SET
 		    arabic = $1, 
@@ -132,9 +132,10 @@ func (z *zikrRepo) Update(zikr *domain.Zikr) error {
     `
 
 	res, err := z.db.Exec(context.Background(), query,
-		zikr.GetArabic(),
-		zikr.GetUzbek(),
-		zikr.GetPronounce(),
+		zikr.Arabic,
+		zikr.Uzbek,
+		zikr.Pronounce,
+		zikr.Id,
 	)
 	if err != nil {
 		return err

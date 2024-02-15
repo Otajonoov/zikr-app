@@ -14,6 +14,7 @@ import (
 // @Accept 		json
 // @Produce 	json
 // @Param body body model.Zikr true "Create"
+// @Success 	200 {object} model.Id
 // @Failure 400 string Error response
 // @Router /v1/create-zikr [post]
 func (z *ZikrController) Create(ctx *gin.Context) {
@@ -26,7 +27,7 @@ func (z *ZikrController) Create(ctx *gin.Context) {
 		return
 	}
 
-	res := z.Factory.ParseToDomain(zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
+	res := z.Factory.ParseToController(zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
 	id, err := z.Service.Create(res)
 	if err != nil {
 		log.Println(err)
@@ -35,13 +36,22 @@ func (z *ZikrController) Create(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.JSON(http.StatusCreated, gin.H{
-		"id": id,
+	ctx.JSON(http.StatusCreated, model.Id{
+		Id: id,
 	})
 }
 
+// @Summary 	Get by ID zikr
+// @Description This api can get by ID zikr
+// @Tags 		Zikr
+// @Accept 		json
+// @Produce 	json
+// @Param 		id query string true "ID"
+// @Success 	200 {object} model.Zikr
+// @Failure 400 string Error response
+// @Router /v1/get-zikr [get]
 func (z *ZikrController) Get(ctx *gin.Context) {
-	id := ctx.Param("id")
+	id := ctx.Query("id")
 
 	zikr, err := z.Service.Get(id)
 	if err != nil {
@@ -81,7 +91,19 @@ func (z *ZikrController) GetAll(ctx *gin.Context) {
 	})
 }
 
+// @Summary 	Update zikr
+// @Description This api can update zikr
+// @Tags 		Zikr
+// @Accept 		json
+// @Produce 	json
+// @Param 		id query string true "ID"
+// @Param body body model.Zikr true "Create"
+// @Success 	200 {object} model.Id
+// @Failure 400 string Error response
+// @Router /v1/update-zikr [put]
 func (z *ZikrController) Update(ctx *gin.Context) {
+	id := ctx.Query("id")
+
 	var zikr model.Zikr
 	if err := ctx.ShouldBindJSON(&zikr); err != nil {
 		log.Println(err)
@@ -91,7 +113,7 @@ func (z *ZikrController) Update(ctx *gin.Context) {
 		return
 	}
 
-	res := z.Factory.ParseToDomain(zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
+	res := z.Factory.ParseToDomain(id, zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
 	err := z.Service.Update(res)
 	if err != nil {
 		log.Println(err)
@@ -106,8 +128,16 @@ func (z *ZikrController) Update(ctx *gin.Context) {
 	})
 }
 
+// @Summary 	Delete zikr
+// @Description This api can delete zikr
+// @Tags 		Zikr
+// @Accept 		json
+// @Produce 	json
+// @Param 		id query string true "ID"
+// @Failure 400 string Error response
+// @Router /v1/delete-zikr [delete]
 func (z *ZikrController) Delete(ctx *gin.Context) {
-	id := ctx.Param("id")
+	id := ctx.Query("id")
 
 	err := z.Service.Delete(id)
 	if err != nil {

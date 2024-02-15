@@ -28,7 +28,7 @@ rm: stop
 migration-up:
 	@echo "Migrations Up"
 	sleep 2
-	docker-compose run --rm migrate -path=migrations/ -database='postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable' up
+	docker-compose run --rm migrate -path=migrations/ -database='postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable' up
 
 .PHONY: migration-generate
 migration-generate:
@@ -62,4 +62,4 @@ install-swag:
 .PHONY: swagger-gen
 swagger-gen:
 	@echo "Generating swagger documentation..."
-	docker-compose exec app swag init -g ./internal/zikr/port/router.go -o ./internal/zikr/port/http/docs
+	swag init -g ./internal/zikr/port/router.go -o ./internal/zikr/port/http/docs
