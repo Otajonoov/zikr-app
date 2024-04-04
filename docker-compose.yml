@@ -11,12 +11,12 @@ services:
       - ./.go-cache:/go-cache
     working_dir: /app
     ports:
-      - "5005:5005"
+      - "50055:50055"
     env_file:
       - .env
     environment:
       GOCACHE: /go-cache
-    entrypoint: ["./docker/entrypoint.sh", "./cmd/main.go"]
+    command: reflex -s -r '(\.go$|go\.mod)' -- go run cmd/app/main.go
 
 
   migrate:

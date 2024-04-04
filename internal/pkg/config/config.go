@@ -19,7 +19,7 @@ type Config struct {
 
 func Load() Config {
 	c := Config{}
-	c.HttpPort = cast.ToString(GetOrReturnDefault("HTTP_PORT", "5005"))
+	c.HttpPort = cast.ToString(GetOrReturnDefault("HTTP_PORT", "50055"))
 	c.Environment = cast.ToString(GetOrReturnDefault("ENVIRONMENT", "develop"))
 	c.LogLevel = cast.ToString(GetOrReturnDefault("LOG_LEVEL", "info"))
 

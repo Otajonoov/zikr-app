@@ -2,7 +2,6 @@
 export
 
 DOCKER_COMPOSE_FILE=docker-compose.yml
-
 arg = $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: start
