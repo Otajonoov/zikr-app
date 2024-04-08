@@ -20,13 +20,22 @@ func main() {
 	defer pgxConn.Close()
 
 	factory := domain.NewZikrFactory()
-	zikrRepo := adapter.NewZikrRepo(pgxConn, factory)
-	zikrUsecase := usecase.NewZikrUsecase(zikrRepo, factory)
 
-	apiServer := port.New(port.RouterOption{UseCase: zikrUsecase, Factory: factory})
+	// Repo
+	zikrRepo := adapter.NewZikrRepo(pgxConn, factory)
+	authRepo := adapter.NewAuthRepo(pgxConn)
+
+	// usecase
+	zikrUsecase := usecase.NewZikrUsecase(zikrRepo, factory)
+	authUsecase := usecase.NewAuthUsecase(authRepo)
+
+	apiServer := port.New(port.RouterOption{
+		ZikrUsecase: zikrUsecase,
+		AuthUsecase: authUsecase,
+		Factory:     factory})
 
 	server := &http.Server{
-		Addr:    ":" + cfg.HttpPort, // 5005
+		Addr:    ":" + cfg.HttpPort, // 50055
 		Handler: apiServer,
 	}
 

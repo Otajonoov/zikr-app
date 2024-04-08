@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/create-zikr": {
+        "/v1/create": {
             "post": {
                 "description": "This api can create new zikr",
                 "consumes": [
@@ -55,7 +55,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/delete-zikr": {
+        "/v1/delete": {
             "delete": {
                 "description": "This api can delete zikr",
                 "consumes": [
@@ -87,36 +87,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/get-all-zikr": {
-            "get": {
-                "description": "This api can get all zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Zikr"
-                ],
-                "summary": "Get all zikr",
-                "responses": {
-                    "200": {
-                        "description": "Created successfully",
-                        "schema": {
-                            "$ref": "#/definitions/model.Zikrs"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/get-zikr": {
+        "/v1/get": {
             "get": {
                 "description": "This api can get by ID zikr",
                 "consumes": [
@@ -154,7 +125,104 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/update-zikr": {
+        "/v1/get-all": {
+            "get": {
+                "description": "This api can get all zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Get all zikr",
+                "responses": {
+                    "200": {
+                        "description": "Created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikrs"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/sign-in": {
+            "post": {
+                "description": "This api can Sign-In user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign-In user",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SignIn"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/sign-up": {
+            "post": {
+                "description": "This api can Sign-Up new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Sign-Up user",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/update": {
             "put": {
                 "description": "This api can update zikr",
                 "consumes": [
@@ -224,6 +292,36 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SignIn": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "998999999999"
+                }
+            }
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "fio": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "998999999999"
+                },
+                "uniqeUsername": {
                     "type": "string"
                 }
             }

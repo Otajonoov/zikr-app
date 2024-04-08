@@ -11,7 +11,9 @@ import (
 )
 
 type RouterOption struct {
-	UseCase domain.ZikrUsecase
+	ZikrUsecase domain.ZikrUsecase
+	AuthUsecase domain.AuthUsecase
+
 	Factory domain.ZikrFactory
 }
 
@@ -22,7 +24,8 @@ type RouterOption struct {
 func New(option RouterOption) *gin.Engine {
 	router := gin.New()
 
-	controller := http.NewZikrController(option.UseCase)
+	zikrController := http.NewZikrController(option.ZikrUsecase)
+	authController := http.NewAuthHandler(option.AuthUsecase)
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
@@ -43,11 +46,15 @@ func New(option RouterOption) *gin.Engine {
 	api := router.Group("/v1")
 
 	// Zikr
-	api.POST("/create-zikr", controller.Create)
-	api.GET("/get-zikr", controller.Get)
-	api.GET("/get-all-zikr", controller.GetAll)
-	api.PUT("/update-zikr", controller.Update)
-	api.DELETE("/delete-zikr", controller.Delete)
+	api.POST("/create", zikrController.Create)
+	api.GET("/get", zikrController.Get)
+	api.GET("/get-all", zikrController.GetAll)
+	api.PUT("/update", zikrController.Update)
+	api.DELETE("/delete", zikrController.Delete)
+
+	// User
+	api.POST("sign-up", authController.SignUp)
+	api.POST("sign-in", authController.SignIn)
 
 	url := ginSwagger.URL("/v1/swagger/doc.json")
 	api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

@@ -15,6 +15,26 @@ definitions:
       id:
         type: string
     type: object
+  model.SignIn:
+    properties:
+      password:
+        type: string
+      phone_number:
+        example: "998999999999"
+        type: string
+    type: object
+  model.User:
+    properties:
+      fio:
+        type: string
+      password:
+        type: string
+      phone_number:
+        example: "998999999999"
+        type: string
+      uniqeUsername:
+        type: string
+    type: object
   model.Zikr:
     properties:
       arabic:
@@ -35,7 +55,7 @@ info:
   contact: {}
   description: Created by Otajonov Quvonchbek
 paths:
-  /v1/create-zikr:
+  /v1/create:
     post:
       consumes:
       - application/json
@@ -61,7 +81,7 @@ paths:
       summary: Create zikr
       tags:
       - Zikr
-  /v1/delete-zikr:
+  /v1/delete:
     delete:
       consumes:
       - application/json
@@ -82,26 +102,7 @@ paths:
       summary: Delete zikr
       tags:
       - Zikr
-  /v1/get-all-zikr:
-    get:
-      consumes:
-      - application/json
-      description: This api can get all zikr
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Created successfully
-          schema:
-            $ref: '#/definitions/model.Zikrs'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      summary: Get all zikr
-      tags:
-      - Zikr
-  /v1/get-zikr:
+  /v1/get:
     get:
       consumes:
       - application/json
@@ -126,7 +127,70 @@ paths:
       summary: Get by ID zikr
       tags:
       - Zikr
-  /v1/update-zikr:
+  /v1/get-all:
+    get:
+      consumes:
+      - application/json
+      description: This api can get all zikr
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created successfully
+          schema:
+            $ref: '#/definitions/model.Zikrs'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get all zikr
+      tags:
+      - Zikr
+  /v1/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: This api can Sign-In user
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.SignIn'
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Sign-In user
+      tags:
+      - User
+  /v1/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: This api can Sign-Up new user
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Sign-Up user
+      tags:
+      - User
+  /v1/update:
     put:
       consumes:
       - application/json

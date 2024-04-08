@@ -33,7 +33,7 @@ migration-up:
 migration-generate:
 	@echo "Generation migration file $(name)"
 	sleep 2
-	docker-compose run --rm migrate create -ext sql -dir ./migrations -seq $(name)
+	migrate create -ext sql -dir ./migrations -seq $(name)
 
 .PHONY: mod-download
 mod-download:
@@ -59,6 +59,6 @@ install-swag:
 	docker-compose exec app go install github.com/swaggo/swag/cmd/swag@latest
 
 .PHONY: swagger-gen
-swagger-gen:
+swag-gen:
 	@echo "Generating swagger documentation..."
 	swag init -g ./internal/zikr/port/router.go -o ./internal/zikr/port/http/docs
