@@ -1,18 +1,21 @@
 package port
 
 import (
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/go-chi/chi/v5"
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
+	"github.com/jackc/pgx/v5/pgxpool"
+	httpSwagger "github.com/swaggo/http-swagger"
+	"zikr-app/internal/zikr/adapter"
 	"zikr-app/internal/zikr/domain"
-	"zikr-app/internal/zikr/port/http"
+	handler "zikr-app/internal/zikr/port/http"
 	_ "zikr-app/internal/zikr/port/http/docs"
+	"zikr-app/internal/zikr/usecase"
 )
 
 type RouterOption struct {
 	ZikrUsecase domain.ZikrUsecase
 	AuthUsecase domain.AuthUsecase
+	DB          *pgxpool.Pool
 
 	Factory domain.ZikrFactory
 }
@@ -21,43 +24,32 @@ type RouterOption struct {
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
-func New(option RouterOption) *gin.Engine {
-	router := gin.New()
+func New(option RouterOption) *chi.Mux {
 
-	zikrController := http.NewZikrController(option.ZikrUsecase)
-	authController := http.NewAuthHandler(option.AuthUsecase)
+	router := chi.NewRouter()
 
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+	router.Use(chimiddleware.RequestID)
+	router.Use(chimiddleware.Logger)
+	//router.Use(mwLogger.New(log))
+	router.Use(chimiddleware.Recoverer)
+	router.Use(chimiddleware.URLFormat)
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-
-	corConfig := cors.DefaultConfig()
-	corConfig.AllowAllOrigins = true
-	corConfig.AllowCredentials = true
-	corConfig.AllowBrowserExtensions = true
-	corConfig.AllowHeaders = append(corConfig.AllowHeaders, "*")
-	router.Use(cors.New(corConfig))
-
-	api := router.Group("/v1")
+	factory := domain.NewZikrFactory()
 
 	// Zikr
-	api.POST("/create", zikrController.Create)
-	api.GET("/get", zikrController.Get)
-	api.GET("/get-all", zikrController.GetAll)
-	api.PUT("/update", zikrController.Update)
-	api.DELETE("/delete", zikrController.Delete)
+	zikrRepo := adapter.NewZikrRepo(option.DB, factory)
+	zikrUsecase := usecase.NewZikrUsecase(zikrRepo, factory)
+	zikrHandler := handler.NewZikrHandler(zikrUsecase)
 
-	// User
-	api.POST("sign-up", authController.SignUp)
-	api.POST("sign-in", authController.SignIn)
+	// Routers
+	router.Route("/zikr", func(r chi.Router) {
+		r.Post("/create", zikrHandler.Create())
+		r.Get("/get", zikrHandler.Create())
+		r.Get("/get-all", zikrHandler.Create())
+		r.Put("/update", zikrHandler.Create())
+	})
 
-	url := ginSwagger.URL("/v1/swagger/doc.json")
-	api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
-
+	// Swagger integration
+	router.Get("/swagger/*", httpSwagger.Handler())
 	return router
 }

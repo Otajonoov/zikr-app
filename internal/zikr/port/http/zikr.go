@@ -1,6 +1,7 @@
 package http
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/port/model"
@@ -9,15 +10,16 @@ import (
 	"net/http"
 )
 
-type ZikrController struct {
-	Service domain.ZikrUsecase
-	Factory domain.ZikrFactory
+type zikrHandler struct {
+	service domain.ZikrUsecase
+	factory domain.ZikrFactory
 }
 
-func NewZikrController(service domain.ZikrUsecase) *ZikrController {
-	return &ZikrController{
-		Service: service,
+func NewZikrHandler(service domain.ZikrUsecase) *zikrHandler {
+	return &zikrHandler{
+		service: service,
 	}
+
 }
 
 // @Summary 	Create zikr
@@ -28,29 +30,25 @@ func NewZikrController(service domain.ZikrUsecase) *ZikrController {
 // @Param body body model.Zikr true "Create"
 // @Success 	200 {object} model.Id
 // @Failure 400 string Error response
-// @Router /v1/create [post]
-func (z *ZikrController) Create(ctx *gin.Context) {
-	var zikr model.Zikr
-	if err := ctx.ShouldBindJSON(&zikr); err != nil {
-		log.Println(err)
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "error while getting value",
-		})
-		return
-	}
+// @Router /zikr/create [post]
+func (z *zikrHandler) Create() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var zikr model.Zikr
+		if err := json.NewDecoder(r.Body).Decode(&zikr); err != nil {
+			log.Println(err)
+			return
+		}
 
-	res := z.Factory.ParseToController(zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
-	id, err := z.Service.Create(res)
-	if err != nil {
-		log.Println(err)
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "error while create zikr",
-		})
-		return
+		res := z.factory.ParseToController(zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
+		err := z.service.Create(res)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		w.WriteHeader(http.StatusCreated)
+		w.Header().Set("Content-Type", "application/json")
 	}
-	ctx.JSON(http.StatusCreated, model.Id{
-		Id: id,
-	})
 }
 
 // @Summary 	Get by ID zikr
@@ -62,10 +60,10 @@ func (z *ZikrController) Create(ctx *gin.Context) {
 // @Success 	200 {object} model.Zikr
 // @Failure 400 string Error response
 // @Router /v1/get [get]
-func (z *ZikrController) Get(ctx *gin.Context) {
+func (z *zikrHandler) Get(ctx *gin.Context) {
 	id := ctx.Query("id")
 
-	zikr, err := z.Service.Get(id)
+	zikr, err := z.service.Get(id)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -88,9 +86,9 @@ func (z *ZikrController) Get(ctx *gin.Context) {
 // @Success 200 {object} model.Zikrs "Created successfully"
 // @Failure 400 string Error response
 // @Router /v1/get-all [get]
-func (z *ZikrController) GetAll(ctx *gin.Context) {
+func (z *zikrHandler) GetAll(ctx *gin.Context) {
 
-	zikrs, err := z.Service.GetAll()
+	zikrs, err := z.service.GetAll()
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -113,7 +111,7 @@ func (z *ZikrController) GetAll(ctx *gin.Context) {
 // @Success 	200 {object} model.Id
 // @Failure 400 string Error response
 // @Router /v1/update [put]
-func (z *ZikrController) Update(ctx *gin.Context) {
+func (z *zikrHandler) Update(ctx *gin.Context) {
 	id := ctx.Query("id")
 
 	var zikr model.Zikr
@@ -125,8 +123,8 @@ func (z *ZikrController) Update(ctx *gin.Context) {
 		return
 	}
 
-	res := z.Factory.ParseToDomain(id, zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
-	err := z.Service.Update(res)
+	res := z.factory.ParseToDomain(id, zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
+	err := z.service.Update(res)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -148,10 +146,10 @@ func (z *ZikrController) Update(ctx *gin.Context) {
 // @Param 		id query string true "ID"
 // @Failure 400 string Error response
 // @Router /v1/delete [delete]
-func (z *ZikrController) Delete(ctx *gin.Context) {
+func (z *zikrHandler) Delete(ctx *gin.Context) {
 	id := ctx.Query("id")
 
-	err := z.Service.Delete(id)
+	err := z.service.Delete(id)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{

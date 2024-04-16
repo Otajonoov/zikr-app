@@ -6,13 +6,8 @@ func NewZikrFactory() ZikrFactory {
 	return ZikrFactory{}
 }
 
-func (z *ZikrFactory) ParseToDomain(id, arabic, uzbek, pronounce string) *ZikrWithId {
-	return &ZikrWithId{
-		Id:        id,
-		Arabic:    arabic,
-		Uzbek:     uzbek,
-		Pronounce: pronounce,
-	}
+func (z *ZikrFactory) ParseToDomain(id, arabic, uzbek, pronounce string) *Zikr {
+	return &Zikr{}
 }
 
 func (z *ZikrFactory) ParseToController(arabic, uzbek, pronounce string) *Zikr {

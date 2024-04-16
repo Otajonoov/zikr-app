@@ -47,3 +47,71 @@ func GetOrReturnDefault(key string, defaultValue interface{}) interface{} {
 	}
 	return defaultValue
 }
+
+//package config
+//
+//import (
+//	"github.com/ilyakaznacheev/cleanenv"
+//	"log"
+//	"os"
+//	"time"
+//)
+//
+//type Config struct {
+//	Env         string `yaml:"env" env-default:"local"`
+//	Environment string `yaml:"environment" env-default:"develop"`
+//	LogLevel    string `yaml:"logLevel" env-default:"info"`
+//	DatabaseUrl string `yaml:"database_url" env-required:"true"`
+//	Postgres
+//	HTTPServer
+//}
+//
+//type HTTPServer struct {
+//	Address     string        `yaml:"address" env-default:"localhost:50055"`
+//	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
+//	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
+//	User        string        `yaml:"user" env-required:"true"`
+//	Password    string        `yaml:"password" env-required:"true" env:"HTTP_SERVER_PASSWORD"`
+//}
+//
+//type Postgres struct {
+//	PostgresHost     string `yaml:"postgres_host" env-required:"true"`
+//	PostgresPort     string `yaml:"postgres_port" env-required:"true"`
+//	PostgresUser     string `yaml:"postgres_user" env-required:"true"`
+//	PostgresPassword string `yaml:"postgres_password" env-required:"true"`
+//	PostgresDatabase string `yaml:"postgres_database" env-required:"true"`
+//}
+//
+//func MustLoad() *Config {
+//	configPath := os.Getenv("CONFIG_PATH")
+//	if configPath == "" {
+//		log.Fatal("CONFIG_PATH is not set")
+//	}
+//
+//	// check if file exists
+//	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+//		log.Fatalf("config file does not exist: %s", configPath)
+//	}
+//
+//	var cfg Config
+//
+//	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
+//		log.Fatalf("cannot read config: %s", err)
+//	}
+//
+//	return &cfg
+//}
+//
+//func generateDatabaseUrl(c Config) string {
+//	return "postgres://" + c.PostgresUser + ":" + c.PostgresPassword +
+//		"@" + c.PostgresHost + ":" + c.PostgresPort + "/" + c.PostgresDatabase +
+//		"?sslmode=disable"
+//}
+//
+//func GetOrReturnDefault(key string, defaultValue interface{}) interface{} {
+//	_, exists := os.LookupEnv(key)
+//	if exists {
+//		return os.Getenv(key)
+//	}
+//	return defaultValue
+//}

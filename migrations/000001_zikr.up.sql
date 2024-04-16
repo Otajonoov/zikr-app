@@ -1,6 +1,9 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS "zikr" (
-    "id" UUID PRIMARY KEY,
+    "guid" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "arabic" TEXT NOT NULL,
     "uzbek" TEXT NOT NULL,
-    "pronounce" TEXT NOT NULL
+    "pronounce" TEXT NOT NULL,
+    "created_at" TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(0) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

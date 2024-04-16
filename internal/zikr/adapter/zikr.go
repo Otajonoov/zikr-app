@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
@@ -30,22 +29,34 @@ type Zikr struct {
 	pronounce string
 }
 
-func (z *zikrRepo) Create(zikr *domain.Zikr) (id string, err error) {
-	var resId string
+func (z *zikrRepo) Create(zikr *domain.Zikr) error {
 
-	newUUID := uuid.New()
 	query := `
-		INSERT INTO zikr(id, arabic, uzbek, pronounce)
+		INSERT INTO zikr(
+		                 guid, 
+		                 arabic, 
+		                 uzbek, 
+		                 pronounce
+		                 created_at,
+		                 updated_at,
+		)
 		VALUES($1, $2, $3, $4)
-		RETURNING id
 	`
 
-	err = z.db.QueryRow(context.Background(), query, newUUID, zikr.GetArabic(), zikr.GetUzbek(), zikr.GetPronounce()).Scan(&resId)
+	_, err := z.db.Exec(context.Background(), query,
+		zikr.GetGUID(),
+		zikr.GetArabic(),
+		zikr.GetUzbek(),
+		zikr.GetPronounce(),
+		zikr.GetCreatedAt(),
+		zikr.GetUpdatedAt(),
+	)
 	if err != nil {
 		log.Println(err.Error())
-		return "", err
+		return err
 	}
-	return resId, nil
+
+	return nil
 }
 
 func (z *zikrRepo) Get(id string) (zikr *domain.Zikr, err error) {
@@ -77,7 +88,7 @@ func (z *zikrRepo) Get(id string) (zikr *domain.Zikr, err error) {
 	return newZikr, nil
 }
 
-func (z *zikrRepo) GetAll() (zikrs []*domain.ZikrWithId, err error) {
+func (z *zikrRepo) GetAll() (zikrs []*domain.Zikr, err error) {
 	log.Println("Qwerty : ")
 
 	query := `
@@ -105,11 +116,11 @@ func (z *zikrRepo) GetAll() (zikrs []*domain.ZikrWithId, err error) {
 		); err != nil {
 			return nil, err
 		}
-		zikrs = append(zikrs, &domain.ZikrWithId{
-			Id:        zikrRes.id,
-			Arabic:    zikrRes.arabic,
-			Uzbek:     zikrRes.uzbek,
-			Pronounce: zikrRes.pronounce,
+		zikrs = append(zikrs, &domain.Zikr{
+			//Id:        zikrRes.id,
+			//Arabic:    zikrRes.arabic,
+			//Uzbek:     zikrRes.uzbek,
+			//Pronounce: zikrRes.pronounce,
 		})
 	}
 
@@ -122,7 +133,7 @@ func (z *zikrRepo) GetAll() (zikrs []*domain.ZikrWithId, err error) {
 	return zikrs, nil
 }
 
-func (z *zikrRepo) Update(zikr *domain.ZikrWithId) error {
+func (z *zikrRepo) Update(zikr *domain.Zikr) error {
 	query := `
 		UPDATE zikr SET
 		    arabic = $1, 
@@ -131,12 +142,11 @@ func (z *zikrRepo) Update(zikr *domain.ZikrWithId) error {
 		WHERE id = $4
     `
 
-	res, err := z.db.Exec(context.Background(), query,
-		zikr.Arabic,
-		zikr.Uzbek,
-		zikr.Pronounce,
-		zikr.Id,
-	)
+	res, err := z.db.Exec(context.Background(), query) //zikr.Arabic,
+	//zikr.Uzbek,
+	//zikr.Pronounce,
+	//zikr.Id,
+
 	if err != nil {
 		return err
 	}

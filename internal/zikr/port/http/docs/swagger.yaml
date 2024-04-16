@@ -55,32 +55,6 @@ info:
   contact: {}
   description: Created by Otajonov Quvonchbek
 paths:
-  /v1/create:
-    post:
-      consumes:
-      - application/json
-      description: This api can create new zikr
-      parameters:
-      - description: Create
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.Zikr'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Id'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      summary: Create zikr
-      tags:
-      - Zikr
   /v1/delete:
     delete:
       consumes:
@@ -219,6 +193,32 @@ paths:
           schema:
             type: string
       summary: Update zikr
+      tags:
+      - Zikr
+  /zikr/create:
+    post:
+      consumes:
+      - application/json
+      description: This api can create new zikr
+      parameters:
+      - description: Create
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Zikr'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Id'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create zikr
       tags:
       - Zikr
 securityDefinitions:
