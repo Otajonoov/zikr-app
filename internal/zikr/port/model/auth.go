@@ -8,6 +8,6 @@ type User struct {
 }
 
 type SignIn struct {
-	Password    string `json:"password"`
-	PhoneNumber string `json:"phone_number" example:"998999999999"`
+	UserName string
+	Password string
 }
