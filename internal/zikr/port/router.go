@@ -5,6 +5,7 @@ import (
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
 	httpSwagger "github.com/swaggo/http-swagger"
+	"zikr-app/internal/pkg/jwt"
 	"zikr-app/internal/zikr/adapter"
 	"zikr-app/internal/zikr/domain"
 	handler "zikr-app/internal/zikr/port/http"
@@ -44,9 +45,21 @@ func New(option RouterOption) *chi.Mux {
 	// Routers
 	router.Route("/zikr", func(r chi.Router) {
 		r.Post("/create", zikrHandler.Create())
-		r.Get("/get", zikrHandler.Create())
+		r.Get("/get", zikrHandler.Get)
 		r.Get("/get-all", zikrHandler.Create())
 		r.Put("/update", zikrHandler.Create())
+	})
+
+	// Auth
+	authRepo := adapter.NewAuthRepo(option.DB)
+	authUsecase := usecase.NewAuthUsecase(authRepo)
+	authHandler := handler.NewAuthHandler(authUsecase)
+
+	// Routers
+	router.Route("/user", func(r chi.Router) {
+		r.Post("/sign-up-user", authHandler.SignUp)
+		r.Post("/sign-in-user", authHandler.SignIn)
+		r.With(jwt.AuthMiddleWare).Get("/get-user/{username}", authHandler.GetUserByUserName)
 	})
 
 	// Swagger integration
