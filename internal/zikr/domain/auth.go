@@ -1,6 +1,8 @@
 package domain
 
-import "context"
+import (
+	"context"
+)
 
 type User struct {
 	FIO           string
@@ -11,10 +13,13 @@ type User struct {
 
 type AuthUsecase interface {
 	CreateUser(ctx context.Context, user *User) error
-	CheckUser(ctx context.Context, user *User) bool
+	CheckUser(ctx context.Context, userName, password string) (bool, error)
+	GetByUserName(ctx context.Context, userName string) (*User, error)
 }
 
 type AuthRepository interface {
+	UserExists(ctx context.Context, username string) (bool, error)
 	CreateUser(ctx context.Context, user *User) error
-	GetUser(ctx context.Context, phone string) (*User, error)
+	GetUser(ctx context.Context, username string) (*User, error)
+	FindOneByUsername(ctx context.Context, userName string) (*User, error)
 }
