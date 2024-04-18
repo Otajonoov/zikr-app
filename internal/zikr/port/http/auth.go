@@ -1,8 +1,11 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
+	"context"
+	"encoding/json"
+	"github.com/go-chi/chi/v5"
 	"net/http"
+	"zikr-app/internal/pkg/jwt"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/port/model"
 )
@@ -23,24 +26,27 @@ func NewAuthHandler(u domain.AuthUsecase) *AuthHandler {
 // @Param body  body model.User true "body"
 // @Failure 404 string Error response
 // @Router /v1/sign-up [post]
-func (u *AuthHandler) SignUp(ctx *gin.Context) {
+func (u *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 	var req model.User
-	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{})
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err := u.usecase.CreateUser(ctx, &domain.User{
+	if err := u.usecase.CreateUser(context.Background(), &domain.User{
 		FIO:           req.FIO,
 		UniqeUsername: req.UniqeUsername,
 		PhoneNumber:   req.PhoneNumber,
 		Password:      req.Password,
 	}); err != nil {
-		ctx.JSON(http.StatusNotFound, err)
+		http.Error(w, "failed to create user: "+err.Error(), http.StatusNotFound)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, "ok")
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("Signed up"))
+	w.WriteHeader(http.StatusCreated)
 }
 
 // @Summary 	Sign-In user
@@ -51,20 +57,46 @@ func (u *AuthHandler) SignUp(ctx *gin.Context) {
 // @Param body  body model.SignIn true "body"
 // @Failure 404 string Error response
 // @Router /v1/sign-in [post]
-func (u *AuthHandler) SignIn(ctx *gin.Context) {
+func (u *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	var req model.SignIn
-	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{})
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if ok := u.usecase.CheckUser(ctx, &domain.User{
-		PhoneNumber: req.PhoneNumber,
-		Password:    req.Password,
-	}); !ok {
-		ctx.JSON(http.StatusNotFound, "Bunday foydalanuvchi mavjud emas")
+	ok, err := u.usecase.CheckUser(context.Background(), req.UserName, req.Password)
+	if err != nil {
+		http.Error(w, "Invalid username or password", http.StatusInternalServerError)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, "ok")
+	if ok {
+		token, err := jwt.CreateToken(req.UserName)
+		if err != nil {
+			http.Error(w, "username not found: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+		response := map[string]string{
+			"access_token": token,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+	} else {
+		http.Error(w, "invalid credentials", http.StatusUnauthorized)
+	}
+}
+
+func (u *AuthHandler) GetUserByUserName(w http.ResponseWriter, r *http.Request) {
+	userName := chi.URLParam(r, "Username")
+
+	user, err := u.usecase.GetByUserName(context.Background(), userName)
+	if err != nil {
+		http.Error(w, "user not found: "+err.Error(), http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(user)
 }
