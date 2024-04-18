@@ -1,11 +1,11 @@
 package model
 
 type User struct {
-	FIO           string `json:"fio"`
-	UniqeUsername string `json:"uniqeUsername"`
-	Password      string `json:"password"`
-	PhoneNumber   string `json:"phone_number" example:"998999999999"`
-}
+	FIO           string
+	UniqeUsername string
+	Password      string
+	PhoneNumber   string
+} // removed json tags
 
 type SignIn struct {
 	UserName string
