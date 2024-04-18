@@ -2,6 +2,9 @@ package adapter
 
 import (
 	"context"
+	"database/sql"
+	"errors"
+	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"zikr-app/internal/zikr/domain"
 )
@@ -33,16 +36,58 @@ func (u authRepo) CreateUser(ctx context.Context, user *domain.User) error {
 	return nil
 }
 
-func (u authRepo) GetUser(ctx context.Context, phone string) (*domain.User, error) {
+func (u authRepo) GetUser(ctx context.Context, username string) (*domain.User, error) {
+	query := `SELECT password 
+                FROM users
+                WHERE uniqe_username = $1`
 
 	req := domain.User{}
 
-	if err := u.db.QueryRow(ctx, "SELECT phone, password FROM users WHERE phone = $1", phone).Scan(
+	err := u.db.QueryRow(ctx, query, username).Scan(&req.Password)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("user not found for username: %s", username)
+		}
+		return nil, err
+	}
+
+	return &req, nil
+}
+
+func (u authRepo) FindOneByUsername(ctx context.Context, userName string) (*domain.User, error) {
+	query := `SELECT u.fio,
+    				 u.phone,
+    				 u.uniqe_username,
+    				 u.password
+			  FROM users u
+			  WHERE u.uniqe_username = $1;`
+
+	req := domain.User{}
+
+	if err := u.db.QueryRow(ctx, query, userName).Scan(
+		&req.FIO,
 		&req.PhoneNumber,
+		&req.UniqeUsername,
 		&req.Password,
 	); err != nil {
 		return nil, err
 	}
 
 	return &req, nil
+}
+
+func (u authRepo) UserExists(ctx context.Context, username string) (bool, error) {
+	var exists bool
+	query := `
+		SELECT EXISTS (
+			SELECT 1
+			FROM users
+			WHERE uniqe_username = $1
+		)
+	`
+	err := u.db.QueryRow(ctx, query, username).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
 }
