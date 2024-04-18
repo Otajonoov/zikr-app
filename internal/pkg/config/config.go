@@ -15,6 +15,7 @@ type Config struct {
 	PostgresPassword string
 	PostgresDatabase string
 	DatabaseUrl      string
+	JwtSecretKet     string
 }
 
 type JwtConfig struct {
@@ -40,6 +41,7 @@ func Load() Config {
 	c.PostgresUser = cast.ToString(GetOrReturnDefault("POSTGRES_USER", "postgres"))
 	c.PostgresPassword = cast.ToString(GetOrReturnDefault("POSTGRES_PASSWORD", "postgres"))
 	c.PostgresDatabase = cast.ToString(GetOrReturnDefault("POSTGRES_DATABASE", "zikr_app"))
+	c.JwtSecretKet = cast.ToString(GetOrReturnDefault("JWT_SECRET_KEY", "WHic3i9cGl"))
 
 	// Update the DatabaseUrl using the provided information
 	c.DatabaseUrl = cast.ToString(GetOrReturnDefault("DATABASE_URL", generateDatabaseUrl(c)))
