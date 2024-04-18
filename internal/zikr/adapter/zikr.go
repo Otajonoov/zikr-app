@@ -33,18 +33,18 @@ func (z *zikrRepo) Create(zikr *domain.Zikr) error {
 
 	query := `
 		INSERT INTO zikr(
-		                 guid, 
 		                 arabic, 
 		                 uzbek, 
-		                 pronounce
+		                 pronounce,
 		                 created_at,
-		                 updated_at,
+		                 updated_at
 		)
-		VALUES($1, $2, $3, $4)
+		VALUES($1, $2, $3, $4, $5)
 	`
+	// id removed
+	// get fifth field
 
 	_, err := z.db.Exec(context.Background(), query,
-		zikr.GetGUID(),
 		zikr.GetArabic(),
 		zikr.GetUzbek(),
 		zikr.GetPronounce(),
@@ -69,7 +69,7 @@ func (z *zikrRepo) Get(id string) (zikr *domain.Zikr, err error) {
 			pronounce
 		FROM zikr
 		WHERE id=$1
-    `
+   `
 
 	err = z.db.QueryRow(context.Background(), query, id).Scan(
 		&zikrRes.arabic,
