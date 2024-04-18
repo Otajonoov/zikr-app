@@ -18,8 +18,8 @@ type AuthUsecase interface {
 }
 
 type AuthRepository interface {
-	UserExists(ctx context.Context, username string) (bool, error)
 	CreateUser(ctx context.Context, user *User) error
 	GetUser(ctx context.Context, username string) (*User, error)
 	FindOneByUsername(ctx context.Context, userName string) (*User, error)
+	UserExists(ctx context.Context, username string) (bool, error)
 }
