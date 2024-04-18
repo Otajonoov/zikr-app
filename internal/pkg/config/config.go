@@ -17,6 +17,18 @@ type Config struct {
 	DatabaseUrl      string
 }
 
+type JwtConfig struct {
+	JWTSecret string
+}
+
+func NewConfig() *JwtConfig {
+	var config JwtConfig
+
+	config.JWTSecret = getEnv("JWT_SECRET_KEY", "")
+
+	return &config
+}
+
 func Load() Config {
 	c := Config{}
 	c.HttpPort = cast.ToString(GetOrReturnDefault("HTTP_PORT", "50055"))
@@ -45,6 +57,15 @@ func GetOrReturnDefault(key string, defaultValue interface{}) interface{} {
 	if exists {
 		return os.Getenv(key)
 	}
+	return defaultValue
+}
+
+func getEnv(key string, defaultValue string) string {
+	value, exists := os.LookupEnv(key)
+	if exists {
+		return value
+	}
+
 	return defaultValue
 }
 
