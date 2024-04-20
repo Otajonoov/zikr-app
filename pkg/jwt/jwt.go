@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/golang-jwt/jwt"
 	"time"
-	"zikr-app/internal/pkg/config"
+	"zikr-app/pkg/config"
 )
 
 func CreateToken(sub string) (string, error) {
