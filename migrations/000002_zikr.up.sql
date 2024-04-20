@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS "zikr" (
     "id" SERIAL PRIMARY KEY,
-    "user_id" INT REFERENCES users(id),
+    "user_id" INT REFERENCES users(id), -- relationship between user and zikr
     "arabic" TEXT NOT NULL,
     "uzbek" TEXT NOT NULL,
     "pronounce" TEXT NOT NULL,
