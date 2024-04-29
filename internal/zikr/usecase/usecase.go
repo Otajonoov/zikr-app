@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"strings"
 	"time"
 	"zikr-app/internal/zikr/domain"
@@ -18,10 +17,6 @@ func (u *BaseUseCase) Error(msg string, err error) error {
 }
 
 func (u *BaseUseCase) beforeRequest(zikr *domain.Zikr) {
-	if zikr.GetGUID() == "" {
-		zikr.SetGUID(uuid.New().String())
-	}
-
 	if zikr.GetCreatedAt().IsZero() {
 		zikr.SetCreatedAt(time.Now().UTC())
 	}
