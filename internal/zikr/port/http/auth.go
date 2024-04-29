@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"net/http"
-	"zikr-app/internal/pkg/jwt"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/port/model"
+	"zikr-app/pkg/jwt"
 )
 
 type AuthHandler struct {
@@ -89,7 +89,7 @@ func (u *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *AuthHandler) GetUserByUserName(w http.ResponseWriter, r *http.Request) {
-	userName := chi.URLParam(r, "Username")
+	userName := chi.URLParam(r, "username")
 
 	user, err := u.usecase.GetByUserName(context.Background(), userName)
 	if err != nil {
