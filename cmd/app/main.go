@@ -6,10 +6,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"zikr-app/internal/pkg/config"
-	db "zikr-app/internal/pkg/db"
-	"zikr-app/internal/pkg/logger/slogpretty"
 	"zikr-app/internal/zikr/port"
+	"zikr-app/pkg/config"
+	db "zikr-app/pkg/db"
+	"zikr-app/pkg/logger/slogpretty"
 )
 
 const (
