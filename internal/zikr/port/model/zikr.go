@@ -1,9 +1,12 @@
 package model
 
 type Zikr struct {
-	Arabic    string `json:"arabic"`
-	Uzbek     string `json:"uzbek"`
-	Pronounce string `json:"pronounce"`
+	Id         int
+	UserId     int    `json:"user_id"`
+	Arabic     string `json:"arabic"`
+	Uzbek      string `json:"uzbek"`
+	Pronounce  string `json:"pronounce"`
+	IsFavorite bool   `json:"is_favorite"`
 }
 
 type GetZikr struct {
@@ -13,8 +16,13 @@ type GetZikr struct {
 	Pronounce string `json:"pronounce"`
 }
 
+type Favorites struct {
+	UserId int `json:"user_id"`
+	ZikrId int `json:"zikr_id"`
+}
+
 type Id struct {
-	Id string `json:"id"`
+	Id int `json:"id"`
 }
 
 type Zikrs struct {
