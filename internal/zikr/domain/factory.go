@@ -1,20 +1,59 @@
 package domain
 
+import "time"
+
 type ZikrFactory struct{}
 
 func NewZikrFactory() ZikrFactory {
 	return ZikrFactory{}
 }
 
-func (z *ZikrFactory) ParseToDomain(id, arabic, uzbek, pronounce string) *Zikr {
+func (z *ZikrFactory) ParseToDomain(id, userId int, arabic, uzbek, pronounce string, isFav bool, created, updated time.Time) *Zikr {
+	return &Zikr{
+		id:         id,
+		userId:     userId,
+		arabic:     arabic,
+		uzbek:      uzbek,
+		pronounce:  pronounce,
+		isFavorite: isFav,
+		createdAt:  created,
+		updatedAt:  updated,
+	}
+}
+
+func (z *ZikrFactory) ParseToDomain2(id, userId int, arabic, uzbek, pronounce string, isFav bool) *Zikr {
+	return &Zikr{
+		id:         id,
+		userId:     userId,
+		arabic:     arabic,
+		uzbek:      uzbek,
+		pronounce:  pronounce,
+		isFavorite: isFav,
+	}
+}
+
+func (z *ZikrFactory) ParseToDomainHandler(id int, arabic, uzbek, pronounce string, isFav bool) *Zikr {
 	return &Zikr{}
 }
 
-func (z *ZikrFactory) ParseToController(arabic, uzbek, pronounce string) *Zikr {
+func (z *ZikrFactory) ParseToControllerForCreate(userId int, arabic, uzbek, pronounce string, isFavorites bool) *Zikr {
 	return &Zikr{
-		arabic:    arabic,
-		uzbek:     uzbek,
-		pronounce: pronounce,
+		userId:     userId,
+		arabic:     arabic,
+		uzbek:      uzbek,
+		pronounce:  pronounce,
+		isFavorite: isFavorites,
+	}
+}
+
+func (z *ZikrFactory) ParseToController(id, userId int, arabic, uzbek, pronounce string, isFavorites bool) *Zikr {
+	return &Zikr{
+		id:         id,
+		userId:     userId,
+		arabic:     arabic,
+		uzbek:      uzbek,
+		pronounce:  pronounce,
+		isFavorite: isFavorites,
 	}
 }
 
