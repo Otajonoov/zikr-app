@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS "zikr" (
     "pronounce"  TEXT NOT NULL,
     "is_favorite" BOOLEAN DEFAULT FALSE,
     "created_at" TIMESTAMP NOT NULL,
-    "updated_at" TIMESTAMP,
+    "updated_at" TIMESTAMP
 );
