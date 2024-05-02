@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS "zikr" (
     "guid"       UUID PRIMARY KEY,
-    "user_guid"  UUID REFERENCES users(guid) ON DELETE CASCADE
+    "user_guid"  UUID REFERENCES users(guid) ON DELETE CASCADE,
     "arabic"     TEXT NOT NULL,
     "uzbek"      TEXT NOT NULL,
     "pronounce"  TEXT NOT NULL,
