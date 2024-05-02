@@ -15,105 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/delete": {
-            "delete": {
-                "description": "This api can delete zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Zikr"
-                ],
-                "summary": "Delete zikr",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/get": {
-            "get": {
-                "description": "This api can get by ID zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Zikr"
-                ],
-                "summary": "Get by ID zikr",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Zikr"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/get-all": {
-            "get": {
-                "description": "This api can get all zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Zikr"
-                ],
-                "summary": "Get all zikr",
-                "responses": {
-                    "200": {
-                        "description": "Created successfully",
-                        "schema": {
-                            "$ref": "#/definitions/model.Zikrs"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/sign-in": {
             "post": {
                 "description": "This api can Sign-In user",
@@ -182,53 +83,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/update": {
-            "put": {
-                "description": "This api can update zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Zikr"
-                ],
-                "summary": "Update zikr",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Create",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Zikr"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Id"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/zikr/create": {
             "post": {
                 "description": "This api can create new zikr",
@@ -254,12 +108,146 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/zikr/delete": {
+            "delete": {
+                "description": "This api can delete zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Delete zikr",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GUID",
+                        "name": "guid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/zikr/get": {
+            "get": {
+                "description": "This api can get by ID zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Get by ID zikr",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GUID",
+                        "name": "guid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Id"
+                            "$ref": "#/definitions/model.GetZikr"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/zikr/get-all": {
+            "get": {
+                "description": "This api can get all zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Get all zikr",
+                "responses": {
+                    "200": {
+                        "description": "Created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikrs"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/zikr/update": {
+            "put": {
+                "description": "This api can update zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Zikr"
+                ],
+                "summary": "Update zikr",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GUID",
+                        "name": "guid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Update",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikr"
+                        }
+                    }
+                ],
+                "responses": {
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -277,7 +265,7 @@ const docTemplate = `{
                 "arabic": {
                     "type": "string"
                 },
-                "id": {
+                "guid": {
                     "type": "string"
                 },
                 "pronounce": {
@@ -288,23 +276,14 @@ const docTemplate = `{
                 }
             }
         },
-        "model.Id": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
         "model.SignIn": {
             "type": "object",
             "properties": {
                 "password": {
                     "type": "string"
                 },
-                "phone_number": {
-                    "type": "string",
-                    "example": "998999999999"
+                "userName": {
+                    "type": "string"
                 }
             }
         },
@@ -317,9 +296,8 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
-                "phone_number": {
-                    "type": "string",
-                    "example": "998999999999"
+                "phoneNumber": {
+                    "type": "string"
                 },
                 "uniqeUsername": {
                     "type": "string"

@@ -3,24 +3,18 @@ definitions:
     properties:
       arabic:
         type: string
-      id:
+      guid:
         type: string
       pronounce:
         type: string
       uzbek:
         type: string
     type: object
-  model.Id:
-    properties:
-      id:
-        type: string
-    type: object
   model.SignIn:
     properties:
       password:
         type: string
-      phone_number:
-        example: "998999999999"
+      userName:
         type: string
     type: object
   model.User:
@@ -29,8 +23,7 @@ definitions:
         type: string
       password:
         type: string
-      phone_number:
-        example: "998999999999"
+      phoneNumber:
         type: string
       uniqeUsername:
         type: string
@@ -55,71 +48,6 @@ info:
   contact: {}
   description: Created by Otajonov Quvonchbek
 paths:
-  /v1/delete:
-    delete:
-      consumes:
-      - application/json
-      description: This api can delete zikr
-      parameters:
-      - description: ID
-        in: query
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      summary: Delete zikr
-      tags:
-      - Zikr
-  /v1/get:
-    get:
-      consumes:
-      - application/json
-      description: This api can get by ID zikr
-      parameters:
-      - description: ID
-        in: query
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Zikr'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      summary: Get by ID zikr
-      tags:
-      - Zikr
-  /v1/get-all:
-    get:
-      consumes:
-      - application/json
-      description: This api can get all zikr
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Created successfully
-          schema:
-            $ref: '#/definitions/model.Zikrs'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      summary: Get all zikr
-      tags:
-      - Zikr
   /v1/sign-in:
     post:
       consumes:
@@ -164,37 +92,6 @@ paths:
       summary: Sign-Up user
       tags:
       - User
-  /v1/update:
-    put:
-      consumes:
-      - application/json
-      description: This api can update zikr
-      parameters:
-      - description: ID
-        in: query
-        name: id
-        required: true
-        type: string
-      - description: Create
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.Zikr'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Id'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      summary: Update zikr
-      tags:
-      - Zikr
   /zikr/create:
     post:
       consumes:
@@ -210,15 +107,103 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Id'
         "400":
           description: Bad Request
           schema:
             type: string
       summary: Create zikr
+      tags:
+      - Zikr
+  /zikr/delete:
+    delete:
+      consumes:
+      - application/json
+      description: This api can delete zikr
+      parameters:
+      - description: GUID
+        in: query
+        name: guid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Delete zikr
+      tags:
+      - Zikr
+  /zikr/get:
+    get:
+      consumes:
+      - application/json
+      description: This api can get by ID zikr
+      parameters:
+      - description: GUID
+        in: query
+        name: guid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetZikr'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get by ID zikr
+      tags:
+      - Zikr
+  /zikr/get-all:
+    get:
+      consumes:
+      - application/json
+      description: This api can get all zikr
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created successfully
+          schema:
+            $ref: '#/definitions/model.Zikrs'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Get all zikr
+      tags:
+      - Zikr
+  /zikr/update:
+    put:
+      consumes:
+      - application/json
+      description: This api can update zikr
+      parameters:
+      - description: GUID
+        in: query
+        name: guid
+        required: true
+        type: string
+      - description: Update
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Zikr'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Update zikr
       tags:
       - Zikr
 securityDefinitions:

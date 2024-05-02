@@ -5,34 +5,24 @@ import (
 )
 
 type Zikr struct {
-	id         int
-	userId     int
-	arabic     string
-	uzbek      string
-	pronounce  string
-	isFavorite bool //added field isFavorite
-	createdAt  time.Time
-	updatedAt  time.Time
+	guid      string
+	arabic    string
+	uzbek     string
+	pronounce string
+	createdAt time.Time
+	updatedAt time.Time
 }
 
 type Zikrs struct {
 	Zikr []*Zikr
 }
 
-func (z *Zikr) GetGUID() int {
-	return z.id
+func (z *Zikr) GetGuid() string {
+	return z.guid
 }
 
-func (z *Zikr) SetGUID(guid int) {
-	z.id = guid
-}
-
-func (z *Zikr) GetUserId() int {
-	return z.userId
-}
-
-func (z *Zikr) SetUserId(userId int) {
-	z.userId = userId
+func (z *Zikr) SetGuid(id string) {
+	z.guid = id
 }
 
 func (z *Zikr) GetArabic() string {
@@ -59,14 +49,6 @@ func (z *Zikr) SetPronounce(pronounce string) {
 	z.pronounce = pronounce
 }
 
-func (z *Zikr) GetIsFavourite() bool {
-	return z.isFavorite
-}
-
-func (z *Zikr) SetIsFavourite(isFavorite bool) {
-	z.isFavorite = isFavorite
-}
-
 func (z *Zikr) GetCreatedAt() time.Time {
 	return z.createdAt
 }
@@ -85,22 +67,22 @@ func (z *Zikr) SetUpdatedAt(updatedAt time.Time) {
 
 type ZikrRepo interface {
 	Create(zikr *Zikr) error
-	Get(id int) (zikr *Zikr, err error)
+	Get(guid string) (zikr *Zikr, err error)
 	GetAll() (zikrs []Zikr, err error)
-	FavoriteDua(userId, zikrId int) (bool, error)
-	UnFavoriteDua(userId, zikrId int) (bool, error)
-	GetAllFavorites(userId int) (zikrs []Zikr, err error)
+	//FavoriteDua(userId, zikrId int) (bool, error)
+	//UnFavoriteDua(userId, zikrId int) (bool, error)
+	//GetAllFavorites(userId int) (zikrs []Zikr, err error)
 	Update(zikr *Zikr) error
-	Delete(int) error
+	Delete(guid string) error
 }
 
 type ZikrUsecase interface {
 	Create(zikr *Zikr) error
-	Get(id int) (zikr *Zikr, err error)
+	Get(guid string) (zikr *Zikr, err error)
 	GetAll() (zikrs []Zikr, err error)
-	FavoritedDua(userId, zikrId int) (bool, error)
-	UnFavoritedDua(userId, zikrId int) (bool, error)
-	GetAllFavoriteDuas(userId int) (zikrs []Zikr, err error)
+	//FavoritedDua(userId, zikrId int) (bool, error)
+	//UnFavoritedDua(userId, zikrId int) (bool, error)
+	//GetAllFavoriteDuas(userId int) (zikrs []Zikr, err error)
 	Update(zikr *Zikr) error
-	Delete(id int) error
+	Delete(guid string) error
 }
