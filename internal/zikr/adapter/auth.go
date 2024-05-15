@@ -3,6 +3,7 @@ package adapter
 import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"time"
 	"zikr-app/internal/zikr/domain"
 )
 
@@ -17,6 +18,9 @@ func NewAuthRepo(db *pgxpool.Pool) *authRepo {
 }
 
 func (u authRepo) CreateUser(ctx context.Context, user *domain.User) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
 	query := `
 		INSERT INTO users(
 			guid,
@@ -34,6 +38,9 @@ func (u authRepo) CreateUser(ctx context.Context, user *domain.User) error {
 }
 
 func (u authRepo) UserExistsByMail(ctx context.Context, mail string) (bool, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
 	var exists bool
 	query := `SELECT EXISTS (
 				SELECT 1
@@ -50,6 +57,9 @@ func (u authRepo) UserExistsByMail(ctx context.Context, mail string) (bool, erro
 }
 
 func (u authRepo) UserExistsByUsername(ctx context.Context, username string) (bool, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
 	var exists bool
 	query := `SELECT EXISTS (
 				SELECT 1
