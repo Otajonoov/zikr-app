@@ -11,12 +11,12 @@ services:
       - ./.go-cache:/go-cache
     working_dir: /app
     ports:
-      - "50055:50055"
+      - "5005:5005"
     env_file:
       - .env
     environment:
       GOCACHE: /go-cache
-    command: reflex -s -r '(\.go$|go\.mod)' -- go run cmd/app/main.go
+    command: reflex -s -r '(\.go$$|go\.mod)' -- go run cmd/app/main.go
 
 
   migrate:
@@ -31,7 +31,7 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: root
       POSTGRES_DB: zikr_app
     ports:
       - "5432"
