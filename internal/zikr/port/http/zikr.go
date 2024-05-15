@@ -52,7 +52,6 @@ func (z *zikrHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	zikr, err := z.service.Get(requestBody.GUID)
-	log.Println("requestBody", requestBody.GUID)
 	if err != nil {
 		http.Error(w, "internal error: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -103,7 +102,6 @@ func (z *zikrHandler) Update(w http.ResponseWriter, r *http.Request) {
 	guid := r.URL.Query().Get("guid")
 
 	if err := json.NewDecoder(r.Body).Decode(&zikr); err != nil {
-		log.Println("error", err)
 		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -124,7 +122,6 @@ func (z *zikrHandler) PatchCount(w http.ResponseWriter, r *http.Request) {
 	var patch model.PatchCount
 
 	if err := json.NewDecoder(r.Body).Decode(&patch); err != nil {
-		log.Println("error", err)
 		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
 		return
 	}

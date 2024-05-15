@@ -3,7 +3,6 @@ package adapter
 import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"log"
 	"zikr-app/internal/zikr/domain"
 )
 
@@ -195,7 +194,6 @@ func (z *zikrRepo) Delete(guid string) error {
 
 	_, err := z.db.Exec(context.Background(), query, guid)
 	if err != nil {
-		log.Println("err repo", err.Error())
 		return err
 	}
 
