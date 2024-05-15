@@ -2,16 +2,23 @@ package http
 
 import (
 	"encoding/json"
-	"zikr-app/internal/zikr/domain"
-	"zikr-app/internal/zikr/port/model"
-
 	"log"
 	"net/http"
+	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/port/model"
 )
 
 type zikrHandler struct {
 	service domain.ZikrUsecase
 	factory domain.ZikrFactory
+}
+
+type RequestBody struct {
+	GUID string `json:"guid"`
+}
+
+type RequestBodyForUser struct {
+	UserGuid string
 }
 
 func NewZikrHandler(service domain.ZikrUsecase) *zikrHandler {
@@ -20,26 +27,15 @@ func NewZikrHandler(service domain.ZikrUsecase) *zikrHandler {
 	}
 }
 
-// @Summary 	Create zikr
-// @Description This api can create new zikr
-// @Tags 		Zikr
-// @Accept 		json
-// @Produce 	json
-// @Param body body model.Zikr true "Create"
-// @Failure 400 string Error response
-// @Router /zikr/create [post]
 func (z *zikrHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var zikr model.Zikr
+		var zikr domain.Zikr
 		if err := json.NewDecoder(r.Body).Decode(&zikr); err != nil {
-			log.Println("error", err)
 			return
 		}
-
-		res := z.factory.ParseToControllerForCreate(zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
+		res := z.factory.ParseToDomain(zikr.GetGuid(), zikr.GetUserGUID(), zikr.GetArabic(), zikr.GetUzbek(), zikr.GetPronounce(), zikr.GetCount(), zikr.GetIsFavorite(), zikr.GetCreatedAt(), zikr.GetUpdatedAt())
 		err := z.service.Create(res)
 		if err != nil {
-			log.Println(err)
 			return
 		}
 
@@ -49,20 +45,14 @@ func (z *zikrHandler) Create() http.HandlerFunc {
 	}
 }
 
-// @Summary 	Get by ID zikr
-// @Description This api can get by ID zikr
-// @Tags 		Zikr
-// @Accept 		json
-// @Produce 	json
-// @Param 		guid query string true "GUID"
-// @Success 	200 {object} model.GetZikr
-// @Failure 400 string Error response
-// @Router /zikr/get [get]
 func (z *zikrHandler) Get(w http.ResponseWriter, r *http.Request) {
-	guid := r.URL.Query().Get("guid")
+	var requestBody RequestBody
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		return
+	}
 
-	log.Println("Guid: ", guid)
-	zikr, err := z.service.Get(guid)
+	zikr, err := z.service.Get(requestBody.GUID)
+	log.Println("requestBody", requestBody.GUID)
 	if err != nil {
 		http.Error(w, "internal error: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -73,6 +63,7 @@ func (z *zikrHandler) Get(w http.ResponseWriter, r *http.Request) {
 		Arabic:    zikr.GetArabic(),
 		Uzbek:     zikr.GetUzbek(),
 		Pronounce: zikr.GetPronounce(),
+		Count:     zikr.GetCount(),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -80,14 +71,6 @@ func (z *zikrHandler) Get(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&res)
 }
 
-// @Summary 	Get all zikr
-// @Description This api can get all zikr
-// @Tags 		Zikr
-// @Accept 		json
-// @Produce 	json
-// @Success 200 {object} model.Zikrs "Created successfully"
-// @Failure 400 string Error response
-// @Router /zikr/get-all [get]
 func (z *zikrHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	zikrs, err := z.service.GetAll()
@@ -95,14 +78,17 @@ func (z *zikrHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to retrieve duas : "+err.Error(), http.StatusNotFound)
 		return
 	}
+	log.Println("zike", zikrs)
 
 	var zikr model.Zikrs
 	for _, v := range zikrs {
 		zikr.Zikrs = append(zikr.Zikrs, model.GetZikr{
-			Guid:      v.GetGuid(),
-			Arabic:    v.GetArabic(),
-			Uzbek:     v.GetUzbek(),
-			Pronounce: v.GetPronounce(),
+			Guid:       v.GetGuid(),
+			Arabic:     v.GetArabic(),
+			Uzbek:      v.GetUzbek(),
+			Pronounce:  v.GetPronounce(),
+			Count:      v.GetCount(),
+			IsFavorite: v.GetIsFavorite(),
 		})
 	}
 
@@ -111,15 +97,6 @@ func (z *zikrHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(zikr)
 }
 
-// @Summary 	Update zikr
-// @Description This api can update zikr
-// @Tags 		Zikr
-// @Accept 		json
-// @Produce 	json
-// @Param 		guid query string true "GUID"
-// @Param body body model.Zikr true "Update"
-// @Failure 400 string Error response
-// @Router /zikr/update [put]
 func (z *zikrHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var zikr model.Zikr
 
@@ -143,14 +120,27 @@ func (z *zikrHandler) Update(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("ok"))
 }
 
-// @Summary 	Delete zikr
-// @Description This api can delete zikr
-// @Tags 		Zikr
-// @Accept 		json
-// @Produce 	json
-// @Param 		guid query string true "GUID"
-// @Failure 400 string Error response
-// @Router /zikr/delete [delete]
+func (z *zikrHandler) PatchCount(w http.ResponseWriter, r *http.Request) {
+	var patch model.PatchCount
+
+	if err := json.NewDecoder(r.Body).Decode(&patch); err != nil {
+		log.Println("error", err)
+		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	res := z.factory.ParseToDomainToPatch(patch.Guid, patch.UserGuid, patch.Count)
+	err := z.service.UpdateZikrCount(res)
+	if err != nil {
+		http.Error(w, "failed to update zikr count : "+err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("count updated"))
+}
+
 func (z *zikrHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	guid := r.URL.Query().Get("guid")
 
@@ -164,69 +154,3 @@ func (z *zikrHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode("ok")
 }
-
-//func (z *zikrHandler) Favorites(w http.ResponseWriter, r *http.Request) {
-//	var req model.Favorites
-//
-//	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-//		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
-//		return
-//	}
-//
-//	_, err := z.service.FavoritedDua(req.UserId, req.ZikrId)
-//	if err != nil {
-//		http.Error(w, "failed to add favorites : "+err.Error(), http.StatusNotFound)
-//		return
-//	}
-//
-//	w.Header().Set("Content-Type", "application/json")
-//	w.WriteHeader(http.StatusOK)
-//	w.Write([]byte("Updated to favorite"))
-//}
-//
-//func (z *zikrHandler) UnFavorites(w http.ResponseWriter, r *http.Request) {
-//	var req model.Favorites
-//
-//	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-//		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
-//		return
-//	}
-//
-//	_, err := z.service.UnFavoritedDua(req.UserId, req.ZikrId)
-//	if err != nil {
-//		http.Error(w, "failed to add unfavorites : "+err.Error(), http.StatusNotFound)
-//		return
-//	}
-//
-//	w.Header().Set("Content-Type", "application/json")
-//	w.WriteHeader(http.StatusOK)
-//}
-//
-//func (z *zikrHandler) GetAllFavorites(w http.ResponseWriter, r *http.Request) {
-//	//UserIdStr := chi.URLParam(r, "user_id")
-//	//userId, err := strconv.Atoi(UserIdStr)
-//
-//	userId := 2
-//
-//	//if err := nil {
-//	//	http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
-//	//	return
-//	//}
-//
-//	favs, err := z.service.GetAllFavoriteDuas(userId)
-//	if err != nil {
-//		http.Error(w, "failed to add favorites : "+err.Error(), http.StatusNotFound)
-//		return
-//	}
-//	var zikrs []domain.Zikr
-//	zikrs = make([]domain.Zikr, 0, len(favs))
-//	for _, zikr := range favs {
-//		zikrs = append(zikrs, zikr)
-//	}
-//
-//	log.Println("favs", zikrs)
-//	w.Header().Set("Content-Type", "application/json")
-//	w.WriteHeader(http.StatusOK)
-//	json.NewEncoder(w).Encode(zikrs)
-//}
-//

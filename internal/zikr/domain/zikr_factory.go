@@ -1,26 +1,38 @@
 package domain
 
+import (
+	"time"
+)
+
 type ZikrFactory struct{}
 
 func NewZikrFactory() ZikrFactory {
 	return ZikrFactory{}
 }
 
-func (z *ZikrFactory) ParseToDomain(id, arabic, uzbek, pronounce string) *Zikr {
+func (z *ZikrFactory) ParseToDomain(id, userGUID, arabic, uzbek, pronounce string, count int, isFavorite bool, createdAt, updatedAt time.Time) *Zikr {
 	return &Zikr{
-		guid:      id,
-		arabic:    arabic,
-		uzbek:     uzbek,
-		pronounce: pronounce,
+		guid:       id,
+		userGUID:   userGUID,
+		arabic:     arabic,
+		uzbek:      uzbek,
+		pronounce:  pronounce,
+		count:      count,
+		isFavorite: isFavorite,
+		createdAt:  createdAt,
+		updatedAt:  updatedAt,
 	}
 }
 
-func (z *ZikrFactory) ParseToDomain2(id, userId int, arabic, uzbek, pronounce string, isFav bool) *Zikr {
+func (z *ZikrFactory) ParseToDomainSpecial(id, userGuid, arabic, uzbek, pronounce string, count int, isFavorite bool) *Zikr {
 	return &Zikr{
-
-		arabic:    arabic,
-		uzbek:     uzbek,
-		pronounce: pronounce,
+		guid:       id,
+		userGUID:   userGuid,
+		arabic:     arabic,
+		uzbek:      uzbek,
+		pronounce:  pronounce,
+		count:      count,
+		isFavorite: isFavorite,
 	}
 }
 
@@ -41,32 +53,10 @@ func (z *ZikrFactory) ParseToControllerForCreate(arabik, uzbek, pronounce string
 	}
 }
 
-func (z *ZikrFactory) ParseToController(id, userId int, arabic, uzbek, pronounce string, isFavorites bool) *Zikr {
+func (z *ZikrFactory) ParseToDomainToPatch(guid, userGuid string, count int) *Zikr {
 	return &Zikr{
-		arabic:    arabic,
-		uzbek:     uzbek,
-		pronounce: pronounce,
+		guid:     guid,
+		userGUID: userGuid,
+		count:    count,
 	}
 }
-
-//func (z *ZikrFactory) ParseToDomainArray(rows *pgx.Rows) *Zikrs {
-//	var result Zikrs
-//	result.Zikr = make([]*Zikr, 0)
-//	log.Println(" : ", rows)
-//
-//	for rows.Next() {
-//		var zikr Zikr
-//		err := rows.Scan(
-//			&zikr.arabic,
-//			&zikr.uzbek,
-//			&zikr.pronounce,
-//		)
-//		if err != nil {
-//			return nil
-//		}
-//
-//		result.Zikr = append(result.Zikr, &zikr)
-//	}
-//
-//	return &result
-//}

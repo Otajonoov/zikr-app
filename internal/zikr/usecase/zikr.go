@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"time"
 	"zikr-app/internal/zikr/domain"
 )
 
@@ -28,7 +29,7 @@ func (z *zikrUsecase) Create(zikr *domain.Zikr) error {
 	return nil
 }
 
-func (z zikrUsecase) Get(guid string) (zikr *domain.Zikr, err error) {
+func (z *zikrUsecase) Get(guid string) (zikr *domain.Zikr, err error) {
 
 	zikr, err = z.repo.Get(guid)
 	if err != nil {
@@ -38,7 +39,7 @@ func (z zikrUsecase) Get(guid string) (zikr *domain.Zikr, err error) {
 	return zikr, nil
 }
 
-func (z zikrUsecase) GetAll() (zikrs []domain.Zikr, err error) {
+func (z *zikrUsecase) GetAll() (zikrs []domain.Zikr, err error) {
 	zikrs, err = z.repo.GetAll()
 	if err != nil {
 		return nil, err
@@ -46,7 +47,7 @@ func (z zikrUsecase) GetAll() (zikrs []domain.Zikr, err error) {
 	return zikrs, nil
 }
 
-func (z zikrUsecase) Update(zikr *domain.Zikr) error {
+func (z *zikrUsecase) Update(zikr *domain.Zikr) error {
 	err := z.repo.Update(zikr)
 	if err != nil {
 		return err
@@ -55,46 +56,19 @@ func (z zikrUsecase) Update(zikr *domain.Zikr) error {
 	return nil
 }
 
-func (z zikrUsecase) Delete(guid string) error {
+func (z *zikrUsecase) UpdateZikrCount(updateZikr *domain.Zikr) error {
+	err := z.repo.UpdateZikrCount(updateZikr)
+	if err != nil {
+		return err
+	}
+	updateZikr.SetUpdatedAt(time.Now())
+	return nil
+}
+
+func (z *zikrUsecase) Delete(guid string) error {
 	err := z.repo.Delete(guid)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
-
-//func (z zikrUsecase) FavoritedDua(userId, zikrId int) (bool, error) {
-//	ok, err := z.repo.FavoriteDua(userId, zikrId)
-//	if err != nil {
-//		return false, nil
-//	}
-//
-//	return ok, nil
-//}
-
-//func (z zikrUsecase) UnFavoritedDua(userId, zikrId int) (bool, error) {
-//	ok, err := z.repo.UnFavoriteDua(userId, zikrId)
-//	if err != nil {
-//		return false, nil
-//	}
-//
-//	return ok, nil
-//}
-//
-//func (z zikrUsecase) GetAllFavoriteDuas(userId int) (zikrs []domain.Zikr, err error) {
-//	favorites, err := z.repo.GetAllFavorites(userId)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	zikrs = make([]domain.Zikr, 0, len(favorites))
-//	for _, zikr := range favorites {
-//		zikrs = append(zikrs, zikr)
-//		log.Println(zikr.GetGUID(), zikr.GetUserId(), zikr.GetArabic(), zikr.GetUzbek(), zikr.GetPronounce(), zikr.GetIsFavourite(),
-//			zikr.GetCreatedAt(), zikr.GetUpdatedAt())
-//	}
-//
-//	return zikrs, nil
-//}
-//
