@@ -3,12 +3,13 @@ package usecase
 import (
 	"context"
 	"errors"
-	"strings"
+	"log"
 	"zikr-app/internal/zikr/domain"
 )
 
 type authUsecase struct {
 	repo domain.AuthRepository
+	BaseUseCase
 }
 
 func NewAuthUsecase(repo domain.AuthRepository) *authUsecase {
@@ -18,44 +19,31 @@ func NewAuthUsecase(repo domain.AuthRepository) *authUsecase {
 }
 
 func (a *authUsecase) CreateUser(ctx context.Context, user *domain.User) error {
+	a.beforeRequestForUser(user)
 
-	exists, err := a.repo.UserExists(ctx, user.UniqeUsername)
+	err := a.repo.CreateUser(ctx, user)
 	if err != nil {
-		return err
+		return errors.New("failed to create user")
 	}
-
-	if exists {
-		return errors.New("user already exists")
-	} else {
-		err = a.repo.CreateUser(ctx, user)
-		if err != nil {
-			return errors.New("failed to create user")
-		}
-		return nil
-	}
+	return nil
 }
 
-func (a *authUsecase) CheckUser(ctx context.Context, userName, password string) (bool, error) {
+func (a *authUsecase) CheckUser(ctx context.Context, request domain.UserLoginRequest) (bool, error) {
+	user := &domain.User{}
 
-	userData, err := a.repo.GetUser(ctx, userName)
-	if err != nil {
-		return false, errors.New("failed to get user")
-	}
-	if userData.Password != password {
-		return false, errors.New("wrong password")
+	existMail, _ := a.repo.UserExistsByMail(ctx, request.Email)
+	existUserName, _ := a.repo.UserExistsByUsername(ctx, request.UniqueUsername)
+	if !existMail && !existUserName {
+		a.beforeRequestForUser(user)
+		user.Email = request.Email
+		user.UniqueUsername = request.UniqueUsername
+		err := a.repo.CreateUser(context.Background(), user)
+		if err != nil {
+			log.Println("something")
+			return false, errors.New("failed to create user")
+		}
+		return true, nil
 	}
 
 	return true, nil
-}
-
-func (a *authUsecase) GetByUserName(ctx context.Context, userName string) (*domain.User, error) {
-	if strings.TrimSpace(userName) == "" {
-		return nil, errors.New("empty username")
-	}
-
-	userData, err := a.repo.FindOneByUsername(ctx, userName)
-	if err != nil {
-		return nil, errors.New("failed to get user")
-	}
-	return userData, nil
 }
