@@ -50,6 +50,7 @@ func New(option RouterOption) *chi.Mux {
 		r.Get("/get", zikrHandler.Get)
 		r.Get("/get-all", zikrHandler.GetAll)
 		r.Put("/update", zikrHandler.Update)
+		r.Patch("/count", zikrHandler.PatchCount)
 		r.Delete("/delete", zikrHandler.Delete)
 	})
 
@@ -58,10 +59,10 @@ func New(option RouterOption) *chi.Mux {
 	zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo, factory)
 	zikrFavoriteHandler := handler.NewZikrFavoriteHandler(zikrFavoriteUseCase)
 	// Routers
-	router.Route("/favorite", func(r chi.Router) {
-		r.Patch("/favor", zikrFavoriteHandler.UpdateToFavorite)
-		r.Patch("/unfavor", zikrFavoriteHandler.UpdateToUnFavorite)
-		r.Get("/get-favorites", zikrFavoriteHandler.GetAllFavorites)
+	router.Route("/zikrs", func(r chi.Router) {
+		r.Patch("/favorite", zikrFavoriteHandler.UpdateToFavorite)
+		r.Patch("/unfavorite", zikrFavoriteHandler.UpdateToUnFavorite)
+		r.Get("/get-all-favorites", zikrFavoriteHandler.GetAllFavorites)
 	})
 
 	return router
