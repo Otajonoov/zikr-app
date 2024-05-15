@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 	"errors"
-	"log"
 	"zikr-app/internal/zikr/domain"
 )
 
@@ -39,7 +38,6 @@ func (a *authUsecase) CheckUser(ctx context.Context, request domain.UserLoginReq
 		user.UniqueUsername = request.UniqueUsername
 		err := a.repo.CreateUser(context.Background(), user)
 		if err != nil {
-			log.Println("something")
 			return false, errors.New("failed to create user")
 		}
 		return true, nil
