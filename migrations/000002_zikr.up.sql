@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS "zikr" (
     "arabic"     TEXT NOT NULL,
     "uzbek"      TEXT NOT NULL,
     "pronounce"  TEXT NOT NULL,
+    "count"      BIGINT,
     "is_favorite" BOOLEAN DEFAULT FALSE,
-    "created_at" TIMESTAMP NOT NULL,
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP
 );
