@@ -5,21 +5,23 @@ import (
 )
 
 type User struct {
-	FIO           string
-	UniqeUsername string
-	Password      string
-	PhoneNumber   string
+	Guid           string
+	Email          string
+	UniqueUsername string
+}
+
+type UserLoginRequest struct {
+	Email          string
+	UniqueUsername string
 }
 
 type AuthUsecase interface {
 	CreateUser(ctx context.Context, user *User) error
-	CheckUser(ctx context.Context, userName, password string) (bool, error)
-	GetByUserName(ctx context.Context, userName string) (*User, error)
+	CheckUser(ctx context.Context, request UserLoginRequest) (bool, error)
 }
 
 type AuthRepository interface {
 	CreateUser(ctx context.Context, user *User) error
-	GetUser(ctx context.Context, username string) (*User, error)
-	FindOneByUsername(ctx context.Context, userName string) (*User, error)
-	UserExists(ctx context.Context, username string) (bool, error)
+	UserExistsByMail(ctx context.Context, mail string) (bool, error)
+	UserExistsByUsername(ctx context.Context, username string) (bool, error)
 }
