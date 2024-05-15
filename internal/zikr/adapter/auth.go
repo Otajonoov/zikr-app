@@ -2,9 +2,6 @@ package adapter
 
 import (
 	"context"
-	"database/sql"
-	"errors"
-	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"zikr-app/internal/zikr/domain"
 )
@@ -22,13 +19,13 @@ func NewAuthRepo(db *pgxpool.Pool) *authRepo {
 func (u authRepo) CreateUser(ctx context.Context, user *domain.User) error {
 	query := `
 		INSERT INTO users(
-			fio,
-			phone,
-		    uniqe_username,
-			password
-		) VALUES ($1, $2, $3, $4)
+			guid,
+			email,
+		    unique_username
+		) VALUES ($1, $2, $3)
 	`
-	_, err := u.db.Exec(context.Background(), query, user.FIO, user.PhoneNumber, user.UniqeUsername, user.Password)
+
+	_, err := u.db.Exec(context.Background(), query, user.Guid, user.Email, user.UniqueUsername)
 	if err != nil {
 		return err
 	}
@@ -36,55 +33,31 @@ func (u authRepo) CreateUser(ctx context.Context, user *domain.User) error {
 	return nil
 }
 
-func (u authRepo) GetUser(ctx context.Context, username string) (*domain.User, error) {
-	query := `SELECT password 
-                FROM users
-                WHERE uniqe_username = $1`
-
-	req := domain.User{}
-
-	err := u.db.QueryRow(ctx, query, username).Scan(&req.Password)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, fmt.Errorf("user not found for username: %s", username)
-		}
-		return nil, err
-	}
-
-	return &req, nil
-}
-
-func (u authRepo) FindOneByUsername(ctx context.Context, userName string) (*domain.User, error) {
-	query := `SELECT u.fio,
-    				 u.phone,
-    				 u.uniqe_username,
-    				 u.password
-			  FROM users u
-			  WHERE u.uniqe_username = $1;`
-
-	req := domain.User{}
-
-	if err := u.db.QueryRow(ctx, query, userName).Scan(
-		&req.FIO,
-		&req.PhoneNumber,
-		&req.UniqeUsername,
-		&req.Password,
-	); err != nil {
-		return nil, err
-	}
-
-	return &req, nil
-}
-
-func (u authRepo) UserExists(ctx context.Context, username string) (bool, error) {
+func (u authRepo) UserExistsByMail(ctx context.Context, mail string) (bool, error) {
 	var exists bool
-	query := `
-		SELECT EXISTS (
-			SELECT 1
-			FROM users
-			WHERE uniqe_username = $1
+	query := `SELECT EXISTS (
+				SELECT 1
+				FROM users u
+				WHERE u.email = $1 
 		)
 	`
+
+	err := u.db.QueryRow(ctx, query, mail).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
+func (u authRepo) UserExistsByUsername(ctx context.Context, username string) (bool, error) {
+	var exists bool
+	query := `SELECT EXISTS (
+				SELECT 1
+				FROM users u
+				WHERE u.unique_username = $1 
+		)
+	`
+
 	err := u.db.QueryRow(ctx, query, username).Scan(&exists)
 	if err != nil {
 		return false, err
