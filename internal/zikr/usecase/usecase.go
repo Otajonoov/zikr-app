@@ -31,3 +31,9 @@ func (u *BaseUseCase) beforeRequest(zikr *domain.Zikr) {
 		zikr.SetUpdatedAt(time.Now().UTC())
 	}
 }
+
+func (u *BaseUseCase) beforeRequestForUser(user *domain.User) {
+	if user.Guid == "" {
+		user.Guid = uuid.New().String()
+	}
+}
