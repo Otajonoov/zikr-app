@@ -172,14 +172,15 @@ func (z *zikrRepo) Update(zikr *domain.Zikr) error {
 
 func (z *zikrRepo) UpdateZikrCount(zikr *domain.Zikr) error {
 	query := `
-		UPDATE zikr SET
-			count = $1
-		WHERE guid = $2 and user_guid = $3`
+		UPDATE zikr 
+		SET count = count + $1 
+		WHERE guid = $2 AND user_guid = $3;
+	`
 
 	_, err := z.db.Exec(context.Background(), query,
 		zikr.GetCount(),
-		zikr.GetUserGUID(),
 		zikr.GetGuid(),
+		zikr.GetUserGUID(),
 	)
 
 	if err != nil {

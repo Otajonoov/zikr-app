@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/port/model"
@@ -14,7 +13,7 @@ type zikrHandler struct {
 }
 
 type RequestBody struct {
-	GUID string `json:"guid"`
+	GUID string
 }
 
 type RequestBodyForUser struct {
@@ -27,22 +26,23 @@ func NewZikrHandler(service domain.ZikrUsecase) *zikrHandler {
 	}
 }
 
-func (z *zikrHandler) Create() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var zikr domain.Zikr
-		if err := json.NewDecoder(r.Body).Decode(&zikr); err != nil {
-			return
-		}
-		res := z.factory.ParseToDomain(zikr.GetGuid(), zikr.GetUserGUID(), zikr.GetArabic(), zikr.GetUzbek(), zikr.GetPronounce(), zikr.GetCount(), zikr.GetIsFavorite(), zikr.GetCreatedAt(), zikr.GetUpdatedAt())
-		err := z.service.Create(res)
-		if err != nil {
-			return
-		}
-
-		w.WriteHeader(http.StatusCreated)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte("ok"))
+func (z *zikrHandler) Create(w http.ResponseWriter, r *http.Request) {
+	var zikr model.ZikrSave
+	if err := json.NewDecoder(r.Body).Decode(&zikr); err != nil {
+		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
+		return
 	}
+
+	res := z.factory.ParseToDomain(zikr.Guid, zikr.UserGuid, zikr.Arabic, zikr.Uzbek, zikr.Pronounce, zikr.Count, zikr.IsFavorite, zikr.CreatedAt, zikr.UpdatedAt)
+	err := z.service.Create(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("created"))
 }
 
 func (z *zikrHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -58,11 +58,13 @@ func (z *zikrHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := model.GetZikr{
-		Guid:      zikr.GetGuid(),
-		Arabic:    zikr.GetArabic(),
-		Uzbek:     zikr.GetUzbek(),
-		Pronounce: zikr.GetPronounce(),
-		Count:     zikr.GetCount(),
+		Guid:       zikr.GetGuid(),
+		UserGuid:   zikr.GetUserGUID(),
+		Arabic:     zikr.GetArabic(),
+		Uzbek:      zikr.GetUzbek(),
+		Pronounce:  zikr.GetPronounce(),
+		Count:      zikr.GetCount(),
+		IsFavorite: zikr.GetIsFavorite(),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -77,12 +79,12 @@ func (z *zikrHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to retrieve duas : "+err.Error(), http.StatusNotFound)
 		return
 	}
-	log.Println("zike", zikrs)
 
 	var zikr model.Zikrs
 	for _, v := range zikrs {
 		zikr.Zikrs = append(zikr.Zikrs, model.GetZikr{
 			Guid:       v.GetGuid(),
+			UserGuid:   v.GetUserGUID(),
 			Arabic:     v.GetArabic(),
 			Uzbek:      v.GetUzbek(),
 			Pronounce:  v.GetPronounce(),
@@ -139,9 +141,12 @@ func (z *zikrHandler) PatchCount(w http.ResponseWriter, r *http.Request) {
 }
 
 func (z *zikrHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	guid := r.URL.Query().Get("guid")
+	var requestBody RequestBody
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		return
+	}
 
-	err := z.service.Delete(guid)
+	err := z.service.Delete(requestBody.GUID)
 	if err != nil {
 		http.Error(w, "failed to delete zikr: "+err.Error(), http.StatusNotFound)
 		return

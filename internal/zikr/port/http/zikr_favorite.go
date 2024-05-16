@@ -18,7 +18,7 @@ func NewZikrFavoriteHandler(service domain.ZikrFavoritesUsecase) *zikrFavoriteHa
 	}
 }
 
-func (z *zikrFavoriteHandler) UpdateToFavorite(w http.ResponseWriter, r *http.Request) {
+func (z *zikrFavoriteHandler) ToggleFavorite(w http.ResponseWriter, r *http.Request) {
 	var req model.Patch
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -26,7 +26,7 @@ func (z *zikrFavoriteHandler) UpdateToFavorite(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ok, err := z.service.FavoriteDua(req.UserId, req.ZikrId)
+	ok, err := z.service.FavoriteDua(req.UserGuId, req.Guid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -40,7 +40,7 @@ func (z *zikrFavoriteHandler) UpdateToFavorite(w http.ResponseWriter, r *http.Re
 	w.WriteHeader(http.StatusOK)
 }
 
-func (z *zikrFavoriteHandler) UpdateToUnFavorite(w http.ResponseWriter, r *http.Request) {
+func (z *zikrFavoriteHandler) ToggleUnFavorite(w http.ResponseWriter, r *http.Request) {
 	var req model.Patch
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -48,7 +48,7 @@ func (z *zikrFavoriteHandler) UpdateToUnFavorite(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ok, err := z.service.UnFavoriteDua(req.UserId, req.ZikrId)
+	ok, err := z.service.UnFavoriteDua(req.UserGuId, req.Guid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -65,17 +65,68 @@ func (z *zikrFavoriteHandler) UpdateToUnFavorite(w http.ResponseWriter, r *http.
 func (z *zikrFavoriteHandler) GetAllFavorites(w http.ResponseWriter, r *http.Request) {
 	var requestBody RequestBodyForUser
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		http.Error(w, "failed to decode request body: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	favs, err := z.service.GetAllFavorites(requestBody.UserGuid)
-
 	if err != nil {
-		http.Error(w, "failed to retrieve favorites : "+err.Error(), http.StatusNotFound)
+		http.Error(w, "failed to retrieve favorites: "+err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	var zikr model.Zikrs
+	for _, fav := range favs {
+		zikr.Zikrs = append(zikr.Zikrs, model.GetZikr{
+			Guid:       fav.GetGuid(),
+			UserGuid:   fav.GetUserGUID(),
+			Arabic:     fav.GetArabic(),
+			Uzbek:      fav.GetUzbek(),
+			Pronounce:  fav.GetPronounce(),
+			Count:      fav.GetCount(),
+			IsFavorite: true,
+		})
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(favs)
+
+	if err := json.NewEncoder(w).Encode(zikr); err != nil {
+		http.Error(w, "failed to encode response: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (z *zikrFavoriteHandler) GetAllUNFavorites(w http.ResponseWriter, r *http.Request) {
+	var requestBody RequestBodyForUser
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		http.Error(w, "failed to decode request body: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	favs, err := z.service.GetAllFavorites(requestBody.UserGuid)
+	if err != nil {
+		http.Error(w, "failed to retrieve favorites: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var zikr model.Zikrs
+	for _, fav := range favs {
+		zikr.Zikrs = append(zikr.Zikrs, model.GetZikr{
+			Guid:       fav.GetGuid(),
+			UserGuid:   fav.GetUserGUID(),
+			Arabic:     fav.GetArabic(),
+			Uzbek:      fav.GetUzbek(),
+			Pronounce:  fav.GetPronounce(),
+			Count:      fav.GetCount(),
+			IsFavorite: false,
+		})
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(zikr); err != nil {
+		http.Error(w, "failed to encode response: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

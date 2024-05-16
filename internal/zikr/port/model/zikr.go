@@ -1,26 +1,41 @@
 package model
 
+import "time"
+
 type Zikr struct {
-	Arabic    string `json:"arabic"`
-	Uzbek     string `json:"uzbek"`
-	Pronounce string `json:"pronounce"`
+	Arabic    string
+	Uzbek     string
+	Pronounce string
+}
+
+type ZikrSave struct {
+	Guid       string
+	UserGuid   string
+	Arabic     string
+	Uzbek      string
+	Pronounce  string
+	Count      int
+	IsFavorite bool
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type PatchCount struct {
-	Guid     string `json:"guid"`
-	UserGuid string `json:"userGuid"`
-	Count    int    `json:"count"`
+	Guid     string
+	UserGuid string
+	Count    int
 }
 
 type GetZikr struct {
-	Guid       string `json:"guid"`
-	Arabic     string `json:"arabic"`
-	Uzbek      string `json:"uzbek"`
-	Pronounce  string `json:"pronounce"`
-	Count      int    `json:"count"`
-	IsFavorite bool   `json:"isfavorite"`
+	Guid       string
+	UserGuid   string
+	Arabic     string
+	Uzbek      string
+	Pronounce  string
+	Count      int
+	IsFavorite bool
 }
 
 type Zikrs struct {
-	Zikrs []GetZikr `json:"zikrs"`
+	Zikrs []GetZikr
 }

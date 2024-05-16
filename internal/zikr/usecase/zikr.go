@@ -52,7 +52,7 @@ func (z *zikrUsecase) Update(zikr *domain.Zikr) error {
 	if err != nil {
 		return err
 	}
-
+	zikr.SetUpdatedAt(time.Now())
 	return nil
 }
 
@@ -61,7 +61,6 @@ func (z *zikrUsecase) UpdateZikrCount(updateZikr *domain.Zikr) error {
 	if err != nil {
 		return err
 	}
-	updateZikr.SetUpdatedAt(time.Now())
 	return nil
 }
 
