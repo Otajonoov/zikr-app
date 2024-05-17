@@ -5,14 +5,14 @@ import (
 )
 
 type User struct {
-	Guid           string
-	Email          string
-	UniqueUsername string
+	Guid           string `json:"guid"`
+	Email          string `json:"email"`
+	UniqueUsername string `json:"unique_username"`
 }
 
 type UserLoginRequest struct {
-	Email          string
-	UniqueUsername string
+	Email          string `json:"email"`
+	UniqueUsername string `json:"unique_username"`
 }
 
 type AuthUsecase interface {

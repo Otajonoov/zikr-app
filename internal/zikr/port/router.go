@@ -4,9 +4,11 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"zikr-app/internal/zikr/adapter"
 	"zikr-app/internal/zikr/domain"
 	handler "zikr-app/internal/zikr/port/http"
+	_ "zikr-app/internal/zikr/port/http/docs"
 	"zikr-app/internal/zikr/usecase"
 )
 
@@ -18,6 +20,10 @@ type RouterOption struct {
 	Factory domain.ZikrFactory
 }
 
+// @Description Created by Otajonov Quvonchbek and Usmonov Azizbek
+// securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func New(option RouterOption) *chi.Mux {
 
 	router := chi.NewRouter()
@@ -35,7 +41,6 @@ func New(option RouterOption) *chi.Mux {
 
 	// Routers
 	router.Route("/user", func(r chi.Router) {
-		r.Post("/register", authHandler.UserRegister)
 		r.Post("/check-or-register", authHandler.CheckUserRegister)
 	})
 
@@ -66,5 +71,6 @@ func New(option RouterOption) *chi.Mux {
 		r.Get("/all-unfavorites", zikrFavoriteHandler.GetAllUNFavorites)
 	})
 
+	router.Get("/swagger/*", httpSwagger.Handler())
 	return router
 }

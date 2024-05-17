@@ -31,8 +31,8 @@ func (a *authUsecase) CheckUser(ctx context.Context, request domain.UserLoginReq
 	user := &domain.User{}
 
 	existMail, _ := a.repo.UserExistsByMail(ctx, request.Email)
-	existUserName, _ := a.repo.UserExistsByUsername(ctx, request.UniqueUsername)
-	if !existMail && !existUserName {
+	//existUserName, _ := a.repo.UserExistsByUsername(ctx, request.UniqueUsername)
+	if !existMail {
 		a.beforeRequestForUser(user)
 		user.Email = request.Email
 		user.UniqueUsername = request.UniqueUsername
