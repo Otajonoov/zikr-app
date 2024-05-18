@@ -53,7 +53,7 @@ func New(option RouterOption) *chi.Mux {
 	router.Route("/zikr", func(r chi.Router) {
 		r.Post("/create", zikrHandler.Create)
 		r.Get("/get", zikrHandler.Get)
-		r.Get("/get-all", zikrHandler.GetAll)
+		r.Get("/list", zikrHandler.GetAll)
 		r.Put("/update", zikrHandler.Update)
 		r.Patch("/count", zikrHandler.PatchCount)
 		r.Delete("/delete", zikrHandler.Delete)
@@ -68,7 +68,7 @@ func New(option RouterOption) *chi.Mux {
 		r.Patch("/favorite", zikrFavoriteHandler.ToggleFavorite)
 		r.Patch("/unfavorite", zikrFavoriteHandler.ToggleUnFavorite)
 		r.Get("/all-favorites", zikrFavoriteHandler.GetAllFavorites)
-		r.Get("/all-unfavorites", zikrFavoriteHandler.GetAllUNFavorites)
+		r.Get("/all-unfavorites", zikrFavoriteHandler.GetAllUnFavorites)
 	})
 
 	router.Get("/swagger/*", httpSwagger.Handler())

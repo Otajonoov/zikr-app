@@ -18,6 +18,16 @@ func NewZikrFavoriteHandler(service domain.ZikrFavoritesUsecase) *zikrFavoriteHa
 	}
 }
 
+// @Summary Mark zikr as favorite
+// @Description This API marks zikr as favorite
+// @Tags zikr-favs
+// @Accept json
+// @Produce json
+// @Param body body model.Patch true "body"
+// @Success 200 {string} string "updated to favorite"
+// @Failure 400 {string} string "invalid request body"
+// @Failure 404 {string} string "could not update"
+// @Router /zikr-favs/favorite [patch]
 func (z *zikrFavoriteHandler) ToggleFavorite(w http.ResponseWriter, r *http.Request) {
 	var req model.Patch
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -40,6 +50,16 @@ func (z *zikrFavoriteHandler) ToggleFavorite(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusOK)
 }
 
+// @Summary Mark zikr as unfavorite
+// @Description This API marks zikr as unfavorite
+// @Tags zikr-favs
+// @Accept json
+// @Produce json
+// @Param body body model.Patch true "body"
+// @Success 200 {string} string "updated to unfavorite"
+// @Failure 400 {string} string "invalid request body"
+// @Failure 404 {string} string "could not update to unfavorite"
+// @Router /zikr-favs/unfavorite [patch]
 func (z *zikrFavoriteHandler) ToggleUnFavorite(w http.ResponseWriter, r *http.Request) {
 	var req model.Patch
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -62,16 +82,22 @@ func (z *zikrFavoriteHandler) ToggleUnFavorite(w http.ResponseWriter, r *http.Re
 	w.WriteHeader(http.StatusOK)
 }
 
+// @Summary Get all favorites or unfavorites
+// @Description This API retrieves a list of favorite or unfavorite zikrs based on the endpoint
+// @Tags zikr-favs
+// @Accept json
+// @Produce json
+// @Param    user_guid query string true "UserGuid of the zikr"
+// @Success 200 {object} model.Zikrs "body"
+// @Failure 400 {string} string "invalid request body"
+// @Failure 404 {string} string "failed to retrieve favorites/unfavorites"
+// @Router /zikr-favs/all-favorites [get]
 func (z *zikrFavoriteHandler) GetAllFavorites(w http.ResponseWriter, r *http.Request) {
-	var requestBody RequestBodyForUser
-	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-		http.Error(w, "failed to decode request body: "+err.Error(), http.StatusBadRequest)
-		return
-	}
+	userGuid := r.URL.Query().Get("user_guid")
 
-	favs, err := z.service.GetAllFavorites(requestBody.UserGuid)
+	favs, err := z.service.GetAllFavorites(userGuid)
 	if err != nil {
-		http.Error(w, "failed to retrieve favorites: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -97,16 +123,22 @@ func (z *zikrFavoriteHandler) GetAllFavorites(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (z *zikrFavoriteHandler) GetAllUNFavorites(w http.ResponseWriter, r *http.Request) {
-	var requestBody RequestBodyForUser
-	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-		http.Error(w, "failed to decode request body: "+err.Error(), http.StatusBadRequest)
-		return
-	}
+// @Summary Get all favorites or unfavorites
+// @Description This API retrieves a list of favorite or unfavorite zikrs based on the endpoint
+// @Tags zikr-favs
+// @Accept json
+// @Produce json
+// @Param  user_guid query string true "GUID of the user"
+// @Success 200 {object} model.Zikrs "body"
+// @Failure 400 {string} string "invalid request body"
+// @Failure 404 {string} string "failed to retrieve favorites/unfavorites"
+// @Router /zikr-favs/all-unfavorites [get]
+func (z *zikrFavoriteHandler) GetAllUnFavorites(w http.ResponseWriter, r *http.Request) {
+	userGuid := r.URL.Query().Get("user_guid")
 
-	favs, err := z.service.GetAllFavorites(requestBody.UserGuid)
+	favs, err := z.service.GetAllUnFavorites(userGuid)
 	if err != nil {
-		http.Error(w, "failed to retrieve favorites: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

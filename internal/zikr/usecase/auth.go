@@ -27,7 +27,7 @@ func (a *authUsecase) CreateUser(ctx context.Context, user *domain.User) error {
 	return nil
 }
 
-func (a *authUsecase) CheckUser(ctx context.Context, request domain.UserLoginRequest) (bool, error) {
+func (a *authUsecase) CheckUser(ctx context.Context, request domain.UserLoginRequest) (string, error) {
 	user := &domain.User{}
 
 	existMail, _ := a.repo.UserExistsByMail(ctx, request.Email)
@@ -38,10 +38,9 @@ func (a *authUsecase) CheckUser(ctx context.Context, request domain.UserLoginReq
 		user.UniqueUsername = request.UniqueUsername
 		err := a.repo.CreateUser(context.Background(), user)
 		if err != nil {
-			return false, errors.New("failed to create user")
+			return "", errors.New("failed to create user")
 		}
-		return true, nil
 	}
 
-	return true, nil
+	return user.Guid, nil
 }

@@ -44,7 +44,7 @@ func (z zikrFavoritesUsecase) GetAllFavorites(userId string) (zikrs []domain.Zik
 }
 
 func (z zikrFavoritesUsecase) GetAllUnFavorites(userId string) (zikrs []domain.Zikr, err error) {
-	favorites, err := z.repo.GetAllFavorites(userId)
+	favorites, err := z.repo.GetAllUnFavorites(userId)
 	if err != nil {
 		return nil, err
 	}

@@ -17,7 +17,7 @@ type UserLoginRequest struct {
 
 type AuthUsecase interface {
 	CreateUser(ctx context.Context, user *User) error
-	CheckUser(ctx context.Context, request UserLoginRequest) (bool, error)
+	CheckUser(ctx context.Context, request UserLoginRequest) (string, error)
 }
 
 type AuthRepository interface {

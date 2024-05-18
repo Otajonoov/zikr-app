@@ -105,6 +105,7 @@ type ZikrFavoritesRepository interface {
 	FavoriteDua(userId, zikrId string) (bool, error)
 	UnFavoriteDua(userId, zikrId string) (bool, error)
 	GetAllFavorites(userId string) (zikrs []Zikr, err error)
+	GetAllUnFavorites(userId string) (zikrs []Zikr, err error)
 }
 
 type ZikrUsecase interface {
@@ -120,4 +121,5 @@ type ZikrFavoritesUsecase interface {
 	FavoriteDua(userId, zikrId string) (bool, error)
 	UnFavoriteDua(userId, zikrId string) (bool, error)
 	GetAllFavorites(userId string) (zikrs []Zikr, err error)
+	GetAllUnFavorites(userId string) (zikrs []Zikr, err error)
 }

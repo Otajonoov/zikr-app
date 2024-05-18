@@ -21,10 +21,10 @@ type ZikrSave struct {
 }
 
 type PatchCount struct {
-	Guid     string
-	UserGuid string
-	Count    int
+	Count int
 }
+
+type Count int
 
 type GetZikr struct {
 	Guid       string

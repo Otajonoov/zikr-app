@@ -16,11 +16,12 @@ func NewAuthHandler(u domain.AuthUsecase) *AuthHandler {
 }
 
 // @Summary 	Get or Create user
-// @Description This api can Get or Create new user
+// @Description register-user
 // @Tags 		User
 // @Accept 		json
 // @Produce 	json
-// @Param body  body domain.UserLoginRequest true "body"
+// @Param body  body domain.UserLoginRequest true "account info"
+// @Success   200 {object} model.UserGuid "Successful response"
 // @Failure 404 string Error response
 // @Router /user/check-or-register [post]
 func (u *AuthHandler) CheckUserRegister(w http.ResponseWriter, r *http.Request) {
