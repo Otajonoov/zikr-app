@@ -1,0 +1,391 @@
+definitions:
+  domain.UserLoginRequest:
+    properties:
+      email:
+        type: string
+      unique_username:
+        type: string
+    type: object
+  http.RequestBody:
+    properties:
+      guid:
+        type: string
+    type: object
+  model.GetZikr:
+    properties:
+      arabic:
+        type: string
+      count:
+        type: integer
+      guid:
+        type: string
+      isFavorite:
+        type: boolean
+      pronounce:
+        type: string
+      userGuid:
+        type: string
+      uzbek:
+        type: string
+    type: object
+  model.Patch:
+    properties:
+      guid:
+        type: string
+      userGuId:
+        type: string
+    type: object
+  model.UserGuid:
+    properties:
+      guid:
+        type: string
+    type: object
+  model.Zikr:
+    properties:
+      arabic:
+        type: string
+      pronounce:
+        type: string
+      uzbek:
+        type: string
+    type: object
+  model.ZikrSave:
+    properties:
+      guid:
+        type: string
+      userGuid:
+        type: string
+      arabic:
+        type: string
+      uzbek:
+        type: string
+      pronounce:
+        type: string
+      count:
+        type: integer
+      isFavorite:
+        type: boolean
+      created_at:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.Zikrs:
+    properties:
+      zikrs:
+        items:
+          $ref: '#/definitions/model.GetZikr'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /user/check-or-register:
+    post:
+      consumes:
+      - application/json
+      description: register-user
+      parameters:
+      - description: account info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.UserGuid'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get or Create user
+      tags:
+      - User
+  /zikr-favs/all-favorites:
+    get:
+      consumes:
+      - application/json
+      description: This API retrieves a list of favorite or unfavorite zikrs based
+        on the endpoint
+      parameters:
+      - description: UserGuid of the zikr
+        in: query
+        name: user_guid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: body
+          schema:
+            $ref: '#/definitions/model.Zikrs'
+        "400":
+          description: invalid request body
+          schema:
+            type: string
+        "404":
+          description: failed to retrieve favorites/unfavorites
+          schema:
+            type: string
+      summary: Get all favorites or unfavorites
+      tags:
+      - zikr-favs
+  /zikr-favs/all-unfavorites:
+    get:
+      consumes:
+      - application/json
+      description: This API retrieves a list of favorite or unfavorite zikrs based
+        on the endpoint
+      parameters:
+      - description: GUID of the user
+        in: query
+        name: user_guid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: body
+          schema:
+            $ref: '#/definitions/model.Zikrs'
+        "400":
+          description: invalid request body
+          schema:
+            type: string
+        "404":
+          description: failed to retrieve favorites/unfavorites
+          schema:
+            type: string
+      summary: Get all favorites or unfavorites
+      tags:
+      - zikr-favs
+  /zikr-favs/favorite:
+    patch:
+      consumes:
+      - application/json
+      description: This API marks zikr as favorite
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Patch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated to favorite
+          schema:
+            type: string
+        "400":
+          description: invalid request body
+          schema:
+            type: string
+        "404":
+          description: could not update
+          schema:
+            type: string
+      summary: Mark zikr as favorite
+      tags:
+      - zikr-favs
+  /zikr-favs/unfavorite:
+    patch:
+      consumes:
+      - application/json
+      description: This API marks zikr as unfavorite
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Patch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated to unfavorite
+          schema:
+            type: string
+        "400":
+          description: invalid request body
+          schema:
+            type: string
+        "404":
+          description: could not update to unfavorite
+          schema:
+            type: string
+      summary: Mark zikr as unfavorite
+      tags:
+      - zikr-favs
+  /zikr/create:
+    post:
+      consumes:
+      - application/json
+      description: create-zikr
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ZikrSave'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: created
+          schema:
+            type: string
+        "404":
+          description: Error response
+          schema:
+            type: string
+      summary: Create zikr
+      tags:
+      - zikr
+  /zikr/delete:
+    delete:
+      consumes:
+      - application/json
+      description: This api Delete zikr
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/http.RequestBody'
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Delete zikr
+      tags:
+      - zikr
+  /zikr/get:
+    get:
+      consumes:
+      - application/json
+      description: This API gets a zikr
+      parameters:
+      - description: GUID of the zikr
+        in: query
+        name: guid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.GetZikr'
+        "404":
+          description: Error response
+          schema:
+            type: string
+      summary: Get zikr
+      tags:
+      - zikr
+  /zikr/list:
+    get:
+      consumes:
+      - application/json
+      description: This API gets a list of zikr
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.Zikrs'
+        "404":
+          description: Error response
+          schema:
+            type: string
+      summary: Get zikr list
+      tags:
+      - zikr
+  /zikr/count:
+    patch:
+      consumes:
+      - application/json
+      description: This API patches the zikr count
+      parameters:
+      - description: GUID of the zikr
+        in: query
+        name: guid
+        required: true
+        type: string
+      - description: GUID of the user
+        in: query
+        name: user_guid
+        required: true
+        type: string
+      - description: zount of zikr
+        in: query
+        name: count
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: count updated
+          schema:
+            type: string
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+        "404":
+          description: Zikr not found
+          schema:
+            type: string
+      summary: Patch zikr count
+      tags:
+      - zikr
+  /zikr/update:
+    put:
+      consumes:
+      - application/json
+      description: This API updates a zikr
+      parameters:
+      - description: GUID of the zikr
+        in: query
+        name: guid
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Zikr'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated
+          schema:
+            type: string
+        "404":
+          description: Error response
+          schema:
+            type: string
+      summary: Update zikr
+      tags:
+      - zikr
+swagger: "2.0"
