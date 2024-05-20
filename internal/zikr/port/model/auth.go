@@ -8,3 +8,8 @@ type User struct {
 type UserGuid struct {
 	Guid string
 }
+
+type UserLoginRequest struct {
+	Email          string `json:"email"`
+	UniqueUsername string `json:"unique_username"`
+}
