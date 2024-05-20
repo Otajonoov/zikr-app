@@ -17,10 +17,6 @@ type RequestBody struct {
 	GUID string
 }
 
-type RequestBodyForUser struct {
-	UserGuid string
-}
-
 func NewZikrHandler(service domain.ZikrUsecase) *zikrHandler {
 	return &zikrHandler{
 		service: service,
