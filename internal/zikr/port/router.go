@@ -36,7 +36,8 @@ func New(option RouterOption) *chi.Mux {
 	factory := domain.NewZikrFactory()
 
 	authRepo := adapter.NewAuthRepo(option.DB)
-	authUsecase := usecase.NewAuthUsecase(authRepo)
+	zikrRepo := adapter.NewZikrRepo(option.DB, factory)
+	authUsecase := usecase.NewAuthUsecase(authRepo, zikrRepo)
 	authHandler := handler.NewAuthHandler(authUsecase)
 
 	// Routers
@@ -45,7 +46,6 @@ func New(option RouterOption) *chi.Mux {
 	})
 
 	// Zikr
-	zikrRepo := adapter.NewZikrRepo(option.DB, factory)
 	zikrUsecase := usecase.NewZikrUsecase(zikrRepo, factory)
 	zikrHandler := handler.NewZikrHandler(zikrUsecase)
 
