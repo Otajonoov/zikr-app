@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/port/model"
 )
 
 type AuthHandler struct {
@@ -20,12 +22,12 @@ func NewAuthHandler(u domain.AuthUsecase) *AuthHandler {
 // @Tags 		User
 // @Accept 		json
 // @Produce 	json
-// @Param body  body domain.UserLoginRequest true "account info"
+// @Param body  body model.UserLoginRequest true "account info"
 // @Success   200 {object} model.UserGuid "Successful response"
 // @Failure 404 string Error response
 // @Router /user/check-or-register [post]
 func (u *AuthHandler) CheckUserRegister(w http.ResponseWriter, r *http.Request) {
-	var req domain.UserLoginRequest
+	var req model.UserLoginRequest
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -39,7 +41,11 @@ func (u *AuthHandler) CheckUserRegister(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	lines := strings.Split(user, ", ")
+
+	formattedUser := strings.Join(lines, "\n")
+
+	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(user)
+	_, _ = w.Write([]byte(formattedUser))
 }
