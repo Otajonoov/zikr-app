@@ -3,6 +3,7 @@ package adapter
 import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"time"
 	"zikr-app/internal/zikr/domain"
 )
 
@@ -144,6 +145,66 @@ func (z *zikrRepo) GetAll() (zikrs []domain.Zikr, err error) {
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+	return zikrs, nil
+}
+
+func (z *zikrRepo) GetUserZikrByMail(email, username string) ([]domain.Zikr, error) {
+	query := `
+		SELECT 
+			z.guid,
+			z.user_guid,
+			z.arabic,
+			z.uzbek,
+			z.pronounce,
+			z.count,
+			z.is_favorite,
+			z.created_at,
+			z.updated_at
+		FROM zikr z
+		INNER JOIN 
+			users u ON u.guid = z.user_guid
+		WHERE u.email = $1 AND u.unique_username = $2`
+
+	rows, err := z.db.Query(context.Background(), query, email, username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var zikrs []domain.Zikr
+	for rows.Next() {
+		var (
+			guid       string
+			userGUID   string
+			arabic     string
+			uzbek      string
+			pronounce  string
+			count      int
+			isFavorite bool
+			createdAt  time.Time
+			updatedAt  time.Time
+		)
+		if err := rows.Scan(
+			&guid,
+			&userGUID,
+			&arabic,
+			&uzbek,
+			&pronounce,
+			&count,
+			&isFavorite,
+			&createdAt,
+			&updatedAt,
+		); err != nil {
+			return nil, err
+		}
+		zikrDomain := z.factory.ParseToDomain(guid, userGUID, arabic, uzbek, pronounce, count, isFavorite, createdAt, updatedAt)
+		zikrs = append(zikrs, *zikrDomain)
+	}
+
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+
 	return zikrs, nil
 }
 
