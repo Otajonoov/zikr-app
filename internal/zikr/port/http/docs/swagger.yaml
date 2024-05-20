@@ -1,5 +1,5 @@
 definitions:
-  domain.UserLoginRequest:
+  model.UserLoginRequest:
     properties:
       email:
         type: string
@@ -91,7 +91,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/domain.UserLoginRequest'
+          $ref: '#/definitions/model.UserLoginRequest'
       produces:
       - application/json
       responses:

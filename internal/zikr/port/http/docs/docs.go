@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.UserLoginRequest"
+                            "$ref": "#/definitions/model.UserLoginRequest"
                         }
                     }
                 ],
@@ -483,7 +483,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.UserLoginRequest": {
+        "model.UserLoginRequest": {
             "type": "object",
             "properties": {
                 "email": {

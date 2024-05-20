@@ -24,7 +24,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.UserLoginRequest"
+                            "$ref": "#/definitions/model.UserLoginRequest"
                         }
                     }
                 ],
@@ -472,7 +472,7 @@
         }
     },
     "definitions": {
-        "domain.UserLoginRequest": {
+        "model.UserLoginRequest": {
             "type": "object",
             "properties": {
                 "email": {
