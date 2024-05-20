@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"zikr-app/internal/zikr/port/model"
 )
 
 type User struct {
@@ -10,14 +11,9 @@ type User struct {
 	UniqueUsername string `json:"unique_username"`
 }
 
-type UserLoginRequest struct {
-	Email          string `json:"email"`
-	UniqueUsername string `json:"unique_username"`
-}
-
 type AuthUsecase interface {
 	CreateUser(ctx context.Context, user *User) error
-	CheckUser(ctx context.Context, request UserLoginRequest) (string, error)
+	CheckUser(ctx context.Context, request model.UserLoginRequest) (string, error)
 }
 
 type AuthRepository interface {
