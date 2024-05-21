@@ -9,24 +9,13 @@ import (
 
 type zikrRepo struct {
 	db      *pgxpool.Pool
-	factory domain.ZikrFactory
+	factory domain.Factory
 }
 
-func NewZikrRepo(db *pgxpool.Pool, factory domain.ZikrFactory) domain.ZikrRepo {
+func NewZikrRepo(db *pgxpool.Pool) domain.ZikrRepo {
 	return &zikrRepo{
-		db:      db,
-		factory: factory,
+		db: db,
 	}
-}
-
-type Zikr struct {
-	guid       string
-	userGuid   string
-	arabic     string
-	uzbek      string
-	pronounce  string
-	count      int
-	isFavorite bool
 }
 
 func (z *zikrRepo) Create(zikr *domain.Zikr) error {
@@ -45,17 +34,14 @@ func (z *zikrRepo) Create(zikr *domain.Zikr) error {
 		VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);
 	`
 
-	_, err := z.db.Exec(context.Background(), query,
-		zikr.GetGuid(),
-		zikr.GetUserGUID(),
-		zikr.GetArabic(),
-		zikr.GetUzbek(),
-		zikr.GetPronounce(),
-		zikr.GetCount(),
-		zikr.GetIsFavorite(),
-		zikr.GetCreatedAt(),
-		zikr.GetUpdatedAt(),
-	)
+	_, err := z.db.Exec(context.Background(), query)//zikr.GetGuid(),
+	//zikr.GetUserGUID(),
+	//zikr.GetArabic(),
+	//zikr.GetUzbek(),
+	//zikr.GetPronounce(),
+	//zikr.GetCount(),
+	//zikr.GetIsFavorite(),
+
 	if err != nil {
 		return err
 	}
@@ -101,12 +87,12 @@ func (z *zikrRepo) Get(guid string) (zikr *domain.Zikr, err error) {
 		return nil, err
 	}
 
-	zikr = z.factory.ParseToDomainSpecial(id, userGuid, arabic, uzbek, pronounce, count, isFavorite)
+	//zikr = z.factory.ParseToDomainSpecial(id, userGuid, arabic, uzbek, pronounce, count, isFavorite)
 	return zikr, nil
 }
 
 func (z *zikrRepo) GetAll() (zikrs []domain.Zikr, err error) {
-	zikr := Zikr{}
+	//zikr := Zikr{}
 
 	query := `
 		SELECT
@@ -128,19 +114,19 @@ func (z *zikrRepo) GetAll() (zikrs []domain.Zikr, err error) {
 
 	for rows.Next() {
 		if err := rows.Scan(
-			&zikr.guid,
-			&zikr.userGuid,
-			&zikr.arabic,
-			&zikr.uzbek,
-			&zikr.pronounce,
-			&zikr.count,
-			&zikr.isFavorite,
+		//&zikr.guid,
+		//&zikr.userGuid,
+		//&zikr.arabic,
+		//&zikr.uzbek,
+		//&zikr.pronounce,
+		//&zikr.count,
+		//&zikr.isFavorite,
 		); err != nil {
 			return nil, err
 		}
 
-		newZikr := z.factory.ParseToDomainSpecial(zikr.guid, zikr.userGuid, zikr.arabic, zikr.uzbek, zikr.pronounce, zikr.count, zikr.isFavorite)
-		zikrs = append(zikrs, *newZikr)
+		//newZikr := z.factory.ParseToDomainSpecial(zikr.guid, zikr.userGuid, zikr.arabic, zikr.uzbek, zikr.pronounce, zikr.count, zikr.isFavorite)
+		//zikrs = append(zikrs, *newZikr)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
@@ -197,8 +183,8 @@ func (z *zikrRepo) GetUserZikrByMail(email, username string) ([]domain.Zikr, err
 		); err != nil {
 			return nil, err
 		}
-		zikrDomain := z.factory.ParseToDomain(guid, userGUID, arabic, uzbek, pronounce, count, isFavorite, createdAt, updatedAt)
-		zikrs = append(zikrs, *zikrDomain)
+		//zikrDomain := z.factory.ParseToDomain(guid, userGUID, arabic, uzbek, pronounce, count, isFavorite, createdAt, updatedAt)
+		//zikrs = append(zikrs, *zikrDomain)
 	}
 
 	if rows.Err() != nil {
@@ -217,12 +203,10 @@ func (z *zikrRepo) Update(zikr *domain.Zikr) error {
 		WHERE guid = $4
    `
 
-	_, err := z.db.Exec(context.Background(), query,
-		zikr.GetArabic(),
-		zikr.GetUzbek(),
-		zikr.GetPronounce(),
-		zikr.GetGuid(),
-	)
+	_, err := z.db.Exec(context.Background(), query)//zikr.GetArabic(),
+	//zikr.GetUzbek(),
+	//zikr.GetPronounce(),
+	//zikr.GetGuid(),
 
 	if err != nil {
 		return err
@@ -238,11 +222,9 @@ func (z *zikrRepo) UpdateZikrCount(zikr *domain.Zikr) error {
 		WHERE guid = $2 AND user_guid = $3;
 	`
 
-	_, err := z.db.Exec(context.Background(), query,
-		zikr.GetCount(),
-		zikr.GetGuid(),
-		zikr.GetUserGUID(),
-	)
+	_, err := z.db.Exec(context.Background(), query)//zikr.GetCount(),
+	//zikr.GetGuid(),
+	//zikr.GetUserGUID(),
 
 	if err != nil {
 		return err

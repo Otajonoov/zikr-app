@@ -1,25 +1,23 @@
 package usecase
 
 import (
-	"time"
 	"zikr-app/internal/zikr/domain"
 )
 
 type zikrUsecase struct {
 	BaseUseCase
 	repo    domain.ZikrRepo
-	factory domain.ZikrFactory
+	factory domain.Factory
 }
 
-func NewZikrUsecase(repo domain.ZikrRepo, factory domain.ZikrFactory) domain.ZikrUsecase {
+func NewZikrUsecase(repo domain.ZikrRepo) domain.ZikrUsecase {
 	return &zikrUsecase{
-		repo:    repo,
-		factory: factory,
+		repo: repo,
 	}
 }
 
 func (z *zikrUsecase) Create(zikr *domain.Zikr) error {
-	z.beforeRequest(zikr)
+	z.beforeRequestForZikr(zikr)
 
 	err := z.repo.Create(zikr)
 	if err != nil {
@@ -52,7 +50,7 @@ func (z *zikrUsecase) Update(zikr *domain.Zikr) error {
 	if err != nil {
 		return err
 	}
-	zikr.SetUpdatedAt(time.Now())
+	//zikr.SetUpdatedAt(time.Now())
 	return nil
 }
 

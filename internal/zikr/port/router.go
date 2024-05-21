@@ -17,7 +17,7 @@ type RouterOption struct {
 	AuthUsecase domain.AuthUsecase
 	DB          *pgxpool.Pool
 
-	Factory domain.ZikrFactory
+	Factory domain.Factory
 }
 
 // @Description Created by Otajonov Quvonchbek and Usmonov Azizbek
@@ -33,23 +33,27 @@ func New(option RouterOption) *chi.Mux {
 	router.Use(chimiddleware.Recoverer)
 	router.Use(chimiddleware.URLFormat)
 
-	factory := domain.NewZikrFactory()
-
+	// Repos
 	authRepo := adapter.NewAuthRepo(option.DB)
-	zikrRepo := adapter.NewZikrRepo(option.DB, factory)
-	authUsecase := usecase.NewAuthUsecase(authRepo, zikrRepo)
-	authHandler := handler.NewAuthHandler(authUsecase)
+	zikrRepo := adapter.NewZikrRepo(option.DB)
+	zikrFavoriteRepo := adapter.NewZikrFavoritesRepo(option.DB)
 
-	// Routers
+	// Usecase
+	authUsecase := usecase.NewAuthUsecase(authRepo, zikrRepo)
+	zikrUsecase := usecase.NewZikrUsecase(zikrRepo)
+	zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo)
+
+	// Handlers
+	authHandler := handler.NewAuthHandler(authUsecase)
+	zikrHandler := handler.NewZikrHandler(zikrUsecase)
+	zikrFavoriteHandler := handler.NewZikrFavoriteHandler(zikrFavoriteUseCase)
+
+	// User registration
 	router.Route("/user", func(r chi.Router) {
-		r.Post("/check-or-register", authHandler.CheckUserRegister)
+		r.Post("/create-user", authHandler.CheckUserRegister)
 	})
 
 	// Zikr
-	zikrUsecase := usecase.NewZikrUsecase(zikrRepo, factory)
-	zikrHandler := handler.NewZikrHandler(zikrUsecase)
-
-	// Routers
 	router.Route("/zikr", func(r chi.Router) {
 		r.Post("/create", zikrHandler.Create)
 		r.Get("/get", zikrHandler.Get)
@@ -59,11 +63,7 @@ func New(option RouterOption) *chi.Mux {
 		r.Delete("/delete", zikrHandler.Delete)
 	})
 
-	// Zikr Favorites
-	zikrFavoriteRepo := adapter.NewZikrFavoritesRepo(option.DB, factory)
-	zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo, factory)
-	zikrFavoriteHandler := handler.NewZikrFavoriteHandler(zikrFavoriteUseCase)
-	// Routers
+	// Zikr favorites
 	router.Route("/zikr-favs", func(r chi.Router) {
 		r.Patch("/favorite", zikrFavoriteHandler.ToggleFavorite)
 		r.Patch("/unfavorite", zikrFavoriteHandler.ToggleUnFavorite)

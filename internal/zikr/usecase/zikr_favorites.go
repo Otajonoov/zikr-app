@@ -6,13 +6,12 @@ import (
 
 type zikrFavoritesUsecase struct {
 	repo    domain.ZikrFavoritesRepository
-	factory domain.ZikrFactory
+	factory domain.Factory
 }
 
-func NewZikrFavoritesUsecase(repo domain.ZikrFavoritesRepository, factory domain.ZikrFactory) domain.ZikrFavoritesUsecase {
+func NewZikrFavoritesUsecase(repo domain.ZikrFavoritesRepository) domain.ZikrFavoritesUsecase {
 	return &zikrFavoritesUsecase{
-		repo:    repo,
-		factory: factory,
+		repo: repo,
 	}
 }
 

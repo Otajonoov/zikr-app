@@ -9,7 +9,7 @@ import (
 
 type zikrFavoriteHandler struct {
 	service domain.ZikrFavoritesRepository
-	factory domain.ZikrFactory
+	factory domain.Factory
 }
 
 func NewZikrFavoriteHandler(service domain.ZikrFavoritesUsecase) *zikrFavoriteHandler {
@@ -104,12 +104,13 @@ func (z *zikrFavoriteHandler) GetAllFavorites(w http.ResponseWriter, r *http.Req
 	var zikr model.Zikrs
 	for _, fav := range favs {
 		zikr.Zikrs = append(zikr.Zikrs, model.GetZikr{
-			Guid:       fav.GetGuid(),
-			UserGuid:   fav.GetUserGUID(),
-			Arabic:     fav.GetArabic(),
-			Uzbek:      fav.GetUzbek(),
-			Pronounce:  fav.GetPronounce(),
-			Count:      fav.GetCount(),
+			Guid: fav.Guid,
+			//	UserGuid:   fav.GetUserGUID(),
+
+			//Arabic:     fav.GetArabic(),
+			//Uzbek:      fav.GetUzbek(),
+			//Pronounce:  fav.GetPronounce(),
+			//Count:      fav.GetCount(),
 			IsFavorite: true,
 		})
 	}
@@ -134,26 +135,26 @@ func (z *zikrFavoriteHandler) GetAllFavorites(w http.ResponseWriter, r *http.Req
 // @Failure 404 {string} string "failed to retrieve favorites/unfavorites"
 // @Router /zikr-favs/all-unfavorites [get]
 func (z *zikrFavoriteHandler) GetAllUnFavorites(w http.ResponseWriter, r *http.Request) {
-	userGuid := r.URL.Query().Get("user_guid")
+	//userGuid := r.URL.Query().Get("user_guid")
 
-	favs, err := z.service.GetAllUnFavorites(userGuid)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	//favs, err := z.service.GetAllUnFavorites(userGuid)
+	//if err != nil {
+	//	http.Error(w, err.Error(), http.StatusInternalServerError)
+	//	return
+	//}
 
 	var zikr model.Zikrs
-	for _, fav := range favs {
-		zikr.Zikrs = append(zikr.Zikrs, model.GetZikr{
-			Guid:       fav.GetGuid(),
-			UserGuid:   fav.GetUserGUID(),
-			Arabic:     fav.GetArabic(),
-			Uzbek:      fav.GetUzbek(),
-			Pronounce:  fav.GetPronounce(),
-			Count:      fav.GetCount(),
-			IsFavorite: false,
-		})
-	}
+	//for _, fav := range favs {
+	//	zikr.Zikrs = append(zikr.Zikrs, model.GetZikr{
+	//		//Guid:       fav.GetGuid(),
+	//		//UserGuid:   fav.GetUserGUID(),
+	//		//Arabic:     fav.GetArabic(),
+	//		//Uzbek:      fav.GetUzbek(),
+	//		//Pronounce:  fav.GetPronounce(),
+	//		//Count:      fav.GetCount(),
+	//		IsFavorite: false,
+	//	})
+	//}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 

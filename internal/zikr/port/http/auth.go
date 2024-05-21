@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strings"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/port/model"
 )
 
 type AuthHandler struct {
 	usecase domain.AuthUsecase
+	factory domain.Factory
 }
 
 func NewAuthHandler(u domain.AuthUsecase) *AuthHandler {
@@ -25,7 +25,7 @@ func NewAuthHandler(u domain.AuthUsecase) *AuthHandler {
 // @Param body  body model.UserLoginRequest true "account info"
 // @Success   200 {object} model.UserGuid "Successful response"
 // @Failure 404 string Error response
-// @Router /user/check-or-register [post]
+// @Router /user/create-user [post]
 func (u *AuthHandler) CheckUserRegister(w http.ResponseWriter, r *http.Request) {
 	var req model.UserLoginRequest
 
@@ -35,17 +35,14 @@ func (u *AuthHandler) CheckUserRegister(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	user, err := u.usecase.CheckUser(context.Background(), req)
+	user := u.factory.ParseToDomainForAuth(req.Email, req.Username)
+	guid, err := u.usecase.GetOrCreateUser(context.Background(), user)
 	if err != nil {
 		http.Error(w, "bad credentials: "+err.Error(), http.StatusNotFound)
 		return
 	}
 
-	lines := strings.Split(user, ", ")
-
-	formattedUser := strings.Join(lines, "\n")
-
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte(formattedUser))
+	json.NewEncoder(w).Encode(model.UserGuid{Guid: guid})
 }

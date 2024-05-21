@@ -1,11 +1,4 @@
 definitions:
-  model.UserLoginRequest:
-    properties:
-      email:
-        type: string
-      unique_username:
-        type: string
-    type: object
   http.RequestBody:
     properties:
       guid:
@@ -40,6 +33,13 @@ definitions:
       guid:
         type: string
     type: object
+  model.UserLoginRequest:
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+    type: object
   model.Zikr:
     properties:
       arabic:
@@ -51,23 +51,23 @@ definitions:
     type: object
   model.ZikrSave:
     properties:
-      guid:
-        type: string
-      userGuid:
-        type: string
       arabic:
-        type: string
-      uzbek:
-        type: string
-      pronounce:
         type: string
       count:
         type: integer
+      createdAt:
+        type: string
+      guid:
+        type: string
       isFavorite:
         type: boolean
-      created_at:
+      pronounce:
         type: string
-      updated_at:
+      updatedAt:
+        type: string
+      userGuid:
+        type: string
+      uzbek:
         type: string
     type: object
   model.Zikrs:
@@ -79,8 +79,9 @@ definitions:
     type: object
 info:
   contact: {}
+  description: Created by Otajonov Quvonchbek and Usmonov Azizbek
 paths:
-  /user/check-or-register:
+  /user/create-user:
     post:
       consumes:
       - application/json
@@ -226,6 +227,45 @@ paths:
       summary: Mark zikr as unfavorite
       tags:
       - zikr-favs
+  /zikr/count:
+    patch:
+      consumes:
+      - application/json
+      description: This API patches the zikr count
+      parameters:
+      - description: GUID of the zikr
+        in: query
+        name: guid
+        required: true
+        type: string
+      - description: GUID of the user
+        in: query
+        name: user_guid
+        required: true
+        type: string
+      - description: count of zikr
+        in: query
+        name: count
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: count updated
+          schema:
+            type: string
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+        "404":
+          description: Zikr not found
+          schema:
+            type: string
+      summary: Patch zikr count
+      tags:
+      - zikr
   /zikr/create:
     post:
       consumes:
@@ -316,45 +356,6 @@ paths:
           schema:
             type: string
       summary: Get zikr list
-      tags:
-      - zikr
-  /zikr/count:
-    patch:
-      consumes:
-      - application/json
-      description: This API patches the zikr count
-      parameters:
-      - description: GUID of the zikr
-        in: query
-        name: guid
-        required: true
-        type: string
-      - description: GUID of the user
-        in: query
-        name: user_guid
-        required: true
-        type: string
-      - description: zount of zikr
-        in: query
-        name: count
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: count updated
-          schema:
-            type: string
-        "400":
-          description: Invalid request
-          schema:
-            type: string
-        "404":
-          description: Zikr not found
-          schema:
-            type: string
-      summary: Patch zikr count
       tags:
       - zikr
   /zikr/update:

@@ -3,12 +3,14 @@ package adapter
 import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"log"
 	"time"
 	"zikr-app/internal/zikr/domain"
 )
 
 type authRepo struct {
-	db *pgxpool.Pool
+	db      *pgxpool.Pool
+	factory domain.Factory
 }
 
 func NewAuthRepo(db *pgxpool.Pool) *authRepo {
@@ -17,60 +19,46 @@ func NewAuthRepo(db *pgxpool.Pool) *authRepo {
 	}
 }
 
-func (u authRepo) CreateUser(ctx context.Context, user *domain.User) error {
+func (u authRepo) CreateUser(ctx context.Context, user *domain.User) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
+	var guid string
 	query := `
 		INSERT INTO users(
 			guid,
 			email,
-		    unique_username
+		    username
 		) VALUES ($1, $2, $3)
+		RETURNING guid
 	`
 
-	_, err := u.db.Exec(context.Background(), query, user.Guid, user.Email, user.UniqueUsername)
+	err := u.db.QueryRow(ctx, query, user.Guid, user.Email, user.Username).Scan(&guid)
 	if err != nil {
-		return err
+		log.Println("err: ", err)
+		return "", err
 	}
 
-	return nil
+	return guid, nil
 }
 
-func (u authRepo) UserExistsByMail(ctx context.Context, mail string) (bool, error) {
+func (u authRepo) GetUserInfo(ctx context.Context, email string) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var exists bool
-	query := `SELECT EXISTS (
-				SELECT 1
-				FROM users u
-				WHERE u.email = $1 
-		)
+	var guid string
+
+	query := `
+		SELECT
+			u.guid
+		FROM users u
+		WHERE u.email = $1
 	`
-
-	err := u.db.QueryRow(ctx, query, mail).Scan(&exists)
+	err := u.db.QueryRow(ctx, query, email).Scan(&guid)
 	if err != nil {
-		return false, err
+		log.Println("err: ", err)
+		return "", err
 	}
-	return exists, nil
-}
 
-func (u authRepo) UserExistsByUsername(ctx context.Context, username string) (bool, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
-	var exists bool
-	query := `SELECT EXISTS (
-				SELECT 1
-				FROM users u
-				WHERE u.unique_username = $1 
-		)
-	`
-
-	err := u.db.QueryRow(ctx, query, username).Scan(&exists)
-	if err != nil {
-		return false, err
-	}
-	return exists, nil
+	return guid, nil
 }

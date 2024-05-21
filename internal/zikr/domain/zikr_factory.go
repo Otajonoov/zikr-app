@@ -1,62 +1,42 @@
 package domain
 
-import (
-	"time"
-)
+type Factory struct{}
 
-type ZikrFactory struct{}
-
-func NewZikrFactory() ZikrFactory {
-	return ZikrFactory{}
+func NewFactory() Factory {
+	return Factory{}
 }
 
-func (z *ZikrFactory) ParseToDomain(id, userGUID, arabic, uzbek, pronounce string, count int, isFavorite bool, createdAt, updatedAt time.Time) *Zikr {
-	return &Zikr{
-		guid:       id,
-		userGUID:   userGUID,
-		arabic:     arabic,
-		uzbek:      uzbek,
-		pronounce:  pronounce,
-		count:      count,
-		isFavorite: isFavorite,
-		createdAt:  createdAt,
-		updatedAt:  updatedAt,
-	}
+//
+//func (z *Factory) ParseToDomainSpecial(id, userGuid, arabic, uzbek, pronounce string, count int, isFavorite bool) *Zikr {
+//	return &Zikr{
+//		guid:       id,
+//		userEmail:  userGuid,
+//		arabic:     arabic,
+//		uzbek:      uzbek,
+//		pronounce:  pronounce,
+//		count:      count,
+//		isFavorite: isFavorite,
+//	}
+//}
+
+//func (z *Factory) ParseToDomainHandler(id, arabic, uzbek, pronounce string) *Zikr {
+//	return &Zikr{
+//		guid:      id,
+//		arabic:    arabic,
+//		uzbek:     uzbek,
+//		pronounce: pronounce,
+//	}
+//}
+
+func (z *Factory) ParseToControllerForCreate(arabik, uzbek, pronounce string) *Zikr {
+	return &Zikr{}
 }
 
-func (z *ZikrFactory) ParseToDomainSpecial(id, userGuid, arabic, uzbek, pronounce string, count int, isFavorite bool) *Zikr {
+func (z *Factory) ParseToDomainToUpdate(guid, arabic, uzbek, pronounce string) *Zikr {
 	return &Zikr{
-		guid:       id,
-		userGUID:   userGuid,
-		arabic:     arabic,
-		uzbek:      uzbek,
-		pronounce:  pronounce,
-		count:      count,
-		isFavorite: isFavorite,
-	}
-}
-
-func (z *ZikrFactory) ParseToDomainHandler(id, arabic, uzbek, pronounce string) *Zikr {
-	return &Zikr{
-		guid:      id,
-		arabic:    arabic,
-		uzbek:     uzbek,
-		pronounce: pronounce,
-	}
-}
-
-func (z *ZikrFactory) ParseToControllerForCreate(arabik, uzbek, pronounce string) *Zikr {
-	return &Zikr{
-		arabic:    arabik,
-		uzbek:     uzbek,
-		pronounce: pronounce,
-	}
-}
-
-func (z *ZikrFactory) ParseToDomainToPatch(guid, userGuid string, count int) *Zikr {
-	return &Zikr{
-		guid:     guid,
-		userGUID: userGuid,
-		count:    count,
+		Guid:      guid,
+		Arabic:    arabic,
+		Uzbek:     uzbek,
+		Pronounce: pronounce,
 	}
 }

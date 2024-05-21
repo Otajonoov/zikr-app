@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user/check-or-register": {
+        "/user/create-user": {
             "post": {
                 "description": "register-user",
                 "consumes": [
@@ -235,6 +235,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/zikr/count": {
+            "patch": {
+                "description": "This API patches the zikr count",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "zikr"
+                ],
+                "summary": "Patch zikr count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GUID of the zikr",
+                        "name": "guid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "GUID of the user",
+                        "name": "user_guid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count of zikr",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "count updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Zikr not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/zikr/create": {
             "post": {
                 "description": "create-zikr",
@@ -376,64 +434,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/zikr/count": {
-            "patch": {
-                "description": "This API patches the zikr count",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr"
-                ],
-                "summary": "Patch zikr count",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "GUID of the zikr",
-                        "name": "guid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "GUID of the user",
-                        "name": "user_guid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "zount of zikr",
-                        "name": "count",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "count updated",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Zikr not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/zikr/update": {
             "put": {
                 "description": "This API updates a zikr",
@@ -483,17 +483,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.UserLoginRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "unique_username": {
-                    "type": "string"
-                }
-            }
-        },
         "http.RequestBody": {
             "type": "object",
             "properties": {
@@ -547,6 +536,17 @@ const docTemplate = `{
                 }
             }
         },
+        "model.UserLoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Zikr": {
             "type": "object",
             "properties": {
@@ -564,31 +564,31 @@ const docTemplate = `{
         "model.ZikrSave": {
             "type": "object",
             "properties": {
-				"guid": {
+                "arabic": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "guid": {
+                    "type": "string"
+                },
+                "isFavorite": {
+                    "type": "boolean"
+                },
+                "pronounce": {
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 },
                 "userGuid": {
                     "type": "string"
                 },
-				"arabic": {
-                    "type": "string"
-                },
                 "uzbek": {
-                    "type": "string"
-                },
-				"pronounce": {
-                    "type": "string"
-                },
-				"count": {
-                    "type": "integer"
-                },
-				"isFavorite": {
-                    "type": "boolean"
-                },
-				"created_at": {
-                    "type": "string"
-                },
-				"updated_at": {
                     "type": "string"
                 }
             }
@@ -614,7 +614,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "",
-	Description:      "",
+	Description:      "Created by Otajonov Quvonchbek and Usmonov Azizbek",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

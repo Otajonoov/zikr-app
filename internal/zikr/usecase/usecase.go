@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"strings"
-	"time"
 	"zikr-app/internal/zikr/domain"
 )
 
@@ -17,19 +16,12 @@ func (u *BaseUseCase) Error(msg string, err error) error {
 	return err
 }
 
-func (u *BaseUseCase) beforeRequest(zikr *domain.Zikr) {
+func (u *BaseUseCase) beforeRequestForZikr(zikr *domain.Zikr) {
 
-	if zikr.GetGuid() == "" {
-		zikr.SetGuid(uuid.New().String())
-	}
+	//if zikr.GetGuid() == "" {
+	//	zikr.SetGuid(uuid.New().String())
+	//}
 
-	if zikr.GetCreatedAt().IsZero() {
-		zikr.SetCreatedAt(time.Now().UTC())
-	}
-
-	if zikr.GetUpdatedAt().IsZero() {
-		zikr.SetUpdatedAt(time.Now().UTC())
-	}
 }
 
 func (u *BaseUseCase) beforeRequestForUser(user *domain.User) {

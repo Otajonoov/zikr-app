@@ -9,7 +9,7 @@ import (
 
 type zikrFavoritesRepo struct {
 	db      *pgxpool.Pool
-	factory domain.ZikrFactory
+	factory domain.Factory
 }
 
 type zikrModel struct {
@@ -24,10 +24,9 @@ type zikrModel struct {
 	updatedAt  time.Time
 }
 
-func NewZikrFavoritesRepo(db *pgxpool.Pool, factory domain.ZikrFactory) domain.ZikrFavoritesRepository {
+func NewZikrFavoritesRepo(db *pgxpool.Pool) domain.ZikrFavoritesRepository {
 	return &zikrFavoritesRepo{
-		db:      db,
-		factory: factory,
+		db: db,
 	}
 }
 
@@ -103,8 +102,8 @@ func (z zikrFavoritesRepo) GetAllFavorites(userId string) (zikrs []domain.Zikr, 
 		); err != nil {
 			return nil, err
 		}
-		zikrDomain := z.factory.ParseToDomain(zikr.guid, zikr.userGUID, zikr.arabic, zikr.uzbek, zikr.pronounce, zikr.count, zikr.isFavorite, zikr.createdAt, zikr.updatedAt)
-		zikrs = append(zikrs, *zikrDomain)
+		//zikrDomain := z.factory.ParseToDomain(zikr.guid, zikr.userGUID, zikr.arabic, zikr.uzbek, zikr.pronounce, zikr.count, zikr.isFavorite, zikr.createdAt, zikr.updatedAt)
+		//zikrs = append(zikrs, *zikrDomain)
 	}
 
 	return zikrs, nil
@@ -152,8 +151,8 @@ func (z zikrFavoritesRepo) GetAllUnFavorites(userId string) (zikrs []domain.Zikr
 		); err != nil {
 			return nil, err
 		}
-		zikrDomain := z.factory.ParseToDomain(zikr.guid, zikr.userGUID, zikr.arabic, zikr.uzbek, zikr.pronounce, zikr.count, zikr.isFavorite, zikr.createdAt, zikr.updatedAt)
-		zikrs = append(zikrs, *zikrDomain)
+		//	zikrDomain := z.factory.ParseToDomain(zikr.guid, zikr.userGUID, zikr.arabic, zikr.uzbek, zikr.pronounce, zikr.count, zikr.isFavorite, zikr.createdAt, zikr.updatedAt)
+		//zikrs = append(zikrs, *zikrDomain)
 	}
 
 	return zikrs, nil

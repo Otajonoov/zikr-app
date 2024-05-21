@@ -1,15 +1,16 @@
 package model
 
 type User struct {
-	Email          string `json:"email"`
-	UniqueUsername string `json:"unique_username"`
+	Guid     string `json:"guid"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
 }
 
 type UserGuid struct {
-	Guid string
+	Guid string `json:"guid"`
 }
 
 type UserLoginRequest struct {
-	Email          string `json:"email"`
-	UniqueUsername string `json:"unique_username"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
 }
