@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"net/http"
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/domain/factory"
 	"zikr-app/internal/zikr/port/model"
 )
 
 type AuthHandler struct {
 	usecase domain.AuthUsecase
-	factory domain.Factory
+	factory factory.Factory
 }
 
 func NewAuthHandler(u domain.AuthUsecase) *AuthHandler {

@@ -28,3 +28,9 @@ func (u *BaseUseCase) beforeRequestForUser(user *domain.User) {
 		user.Guid = uuid.New().String()
 	}
 }
+
+func (u *BaseUseCase) beforeRequestForCount(count *domain.Count) {
+	if count.Guid == "" {
+		count.Guid = uuid.New().String()
+	}
+}

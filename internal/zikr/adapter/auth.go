@@ -6,11 +6,12 @@ import (
 	"log"
 	"time"
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/domain/factory"
 )
 
 type authRepo struct {
 	db      *pgxpool.Pool
-	factory domain.Factory
+	factory factory.Factory
 }
 
 func NewAuthRepo(db *pgxpool.Pool) *authRepo {

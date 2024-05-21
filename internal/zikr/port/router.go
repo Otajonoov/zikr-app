@@ -7,6 +7,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 	"zikr-app/internal/zikr/adapter"
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/domain/factory"
 	handler "zikr-app/internal/zikr/port/http"
 	_ "zikr-app/internal/zikr/port/http/docs"
 	"zikr-app/internal/zikr/usecase"
@@ -17,7 +18,7 @@ type RouterOption struct {
 	AuthUsecase domain.AuthUsecase
 	DB          *pgxpool.Pool
 
-	Factory domain.Factory
+	Factory factory.Factory
 }
 
 // @Description Created by Otajonov Quvonchbek and Usmonov Azizbek
@@ -36,17 +37,20 @@ func New(option RouterOption) *chi.Mux {
 	// Repos
 	authRepo := adapter.NewAuthRepo(option.DB)
 	zikrRepo := adapter.NewZikrRepo(option.DB)
-	zikrFavoriteRepo := adapter.NewZikrFavoritesRepo(option.DB)
+	countRpo := adapter.NewCountRepo(option.DB)
+	//zikrFavoriteRepo := adapter.NewZikrFavoritesRepo(option.DB)
 
 	// Usecase
 	authUsecase := usecase.NewAuthUsecase(authRepo, zikrRepo)
 	zikrUsecase := usecase.NewZikrUsecase(zikrRepo)
-	zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo)
+	countUseCase := usecase.NewCountUsecase(countRpo)
+	//zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo)
 
 	// Handlers
 	authHandler := handler.NewAuthHandler(authUsecase)
 	zikrHandler := handler.NewZikrHandler(zikrUsecase)
-	zikrFavoriteHandler := handler.NewZikrFavoriteHandler(zikrFavoriteUseCase)
+	countHandler := handler.NewCountHandler(countUseCase)
+	//zikrFavoriteHandler := handler.NewZikrFavoriteHandler(zikrFavoriteUseCase)
 
 	// User registration
 	router.Route("/user", func(r chi.Router) {
@@ -63,13 +67,18 @@ func New(option RouterOption) *chi.Mux {
 		r.Delete("/delete", zikrHandler.Delete)
 	})
 
-	// Zikr favorites
-	router.Route("/zikr-favs", func(r chi.Router) {
-		r.Patch("/favorite", zikrFavoriteHandler.ToggleFavorite)
-		r.Patch("/unfavorite", zikrFavoriteHandler.ToggleUnFavorite)
-		r.Get("/all-favorites", zikrFavoriteHandler.GetAllFavorites)
-		r.Get("/all-unfavorites", zikrFavoriteHandler.GetAllUnFavorites)
+	router.Route("/count", func(r chi.Router) {
+		r.Post("/", countHandler.Create)
+		r.Patch("/", countHandler.Count)
 	})
+
+	//// Zikr favorites
+	//router.Route("/zikr-favs", func(r chi.Router) {
+	//	r.Patch("/favorite", zikrFavoriteHandler.ToggleFavorite)
+	//	r.Patch("/unfavorite", zikrFavoriteHandler.ToggleUnFavorite)
+	//	r.Get("/all-favorites", zikrFavoriteHandler.GetAllFavorites)
+	//	r.Get("/all-unfavorites", zikrFavoriteHandler.GetAllUnFavorites)
+	//})
 
 	router.Get("/swagger/*", httpSwagger.Handler())
 	return router

@@ -6,11 +6,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"time"
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/domain/factory"
 )
 
 type zikrRepo struct {
 	db      *pgxpool.Pool
-	factory domain.Factory
+	factory factory.Factory
 }
 
 func NewZikrRepo(db *pgxpool.Pool) domain.ZikrRepo {

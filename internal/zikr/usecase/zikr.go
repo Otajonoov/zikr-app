@@ -2,12 +2,13 @@ package usecase
 
 import (
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/domain/factory"
 )
 
 type zikrUsecase struct {
 	BaseUseCase
 	repo    domain.ZikrRepo
-	factory domain.Factory
+	factory factory.Factory
 }
 
 func NewZikrUsecase(repo domain.ZikrRepo) domain.ZikrUsecase {

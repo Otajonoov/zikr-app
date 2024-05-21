@@ -5,11 +5,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"time"
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/domain/factory"
 )
 
 type zikrFavoritesRepo struct {
 	db      *pgxpool.Pool
-	factory domain.Factory
+	factory factory.Factory
 }
 
 type zikrModel struct {

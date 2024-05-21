@@ -15,6 +15,84 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/count": {
+            "post": {
+                "description": "This API create zikr count",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "count"
+                ],
+                "summary": "Create zikr count",
+                "parameters": [
+                    {
+                        "description": "account info",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Count"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "This API updates zikr count",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "count"
+                ],
+                "summary": "Update zikr count",
+                "parameters": [
+                    {
+                        "description": "account info",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Count"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/create-user": {
             "post": {
                 "description": "register-user",
@@ -141,6 +219,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.Count": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "user_guid": {
+                    "type": "string"
+                },
+                "zikr_guid": {
+                    "type": "string"
+                }
+            }
+        },
         "model.GetZikr": {
             "type": "object",
             "properties": {
@@ -157,9 +249,6 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "pronounce": {
-                    "type": "string"
-                },
-                "user_email": {
                     "type": "string"
                 },
                 "uzbek": {

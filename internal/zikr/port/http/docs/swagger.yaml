@@ -1,4 +1,13 @@
 definitions:
+  model.Count:
+    properties:
+      count:
+        type: integer
+      user_guid:
+        type: string
+      zikr_guid:
+        type: string
+    type: object
   model.GetZikr:
     properties:
       arabic:
@@ -10,8 +19,6 @@ definitions:
       is_favorite:
         type: boolean
       pronounce:
-        type: string
-      user_email:
         type: string
       uzbek:
         type: string
@@ -53,6 +60,57 @@ info:
   contact: {}
   description: Created by Otajonov Quvonchbek and Usmonov Azizbek
 paths:
+  /count:
+    patch:
+      consumes:
+      - application/json
+      description: This API updates zikr count
+      parameters:
+      - description: account info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Count'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Update zikr count
+      tags:
+      - count
+    post:
+      consumes:
+      - application/json
+      description: This API create zikr count
+      parameters:
+      - description: account info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Count'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Create zikr count
+      tags:
+      - count
   /user/create-user:
     post:
       consumes:

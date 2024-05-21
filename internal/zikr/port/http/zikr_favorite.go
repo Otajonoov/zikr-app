@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/domain/factory"
 	"zikr-app/internal/zikr/port/model"
 )
 
 type zikrFavoriteHandler struct {
 	service domain.ZikrFavoritesRepository
-	factory domain.Factory
+	factory factory.Factory
 }
 
 func NewZikrFavoriteHandler(service domain.ZikrFavoritesUsecase) *zikrFavoriteHandler {

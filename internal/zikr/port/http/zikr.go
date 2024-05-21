@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"strconv"
 	"zikr-app/internal/zikr/domain"
+	"zikr-app/internal/zikr/domain/factory"
 	"zikr-app/internal/zikr/port/model"
 )
 
 type zikrHandler struct {
 	service domain.ZikrUsecase
-	factory domain.Factory
+	factory factory.Factory
 }
 
 type RequestBody struct {

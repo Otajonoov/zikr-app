@@ -43,7 +43,7 @@ func Load() Config {
 	c.PostgresDatabase = cast.ToString(GetOrReturnDefault("POSTGRES_DATABASE", "zikr_app"))
 	c.JwtSecretKet = cast.ToString(GetOrReturnDefault("JWT_SECRET_KEY", "WHic3i9cGl"))
 
-	// Update the DatabaseUrl using the provided information
+	// CountUpdate the DatabaseUrl using the provided information
 	c.DatabaseUrl = cast.ToString(GetOrReturnDefault("DATABASE_URL", generateDatabaseUrl(c)))
 	return c
 }
