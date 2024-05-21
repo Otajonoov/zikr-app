@@ -55,244 +55,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/zikr-favs/all-favorites": {
-            "get": {
-                "description": "This API retrieves a list of favorite or unfavorite zikrs based on the endpoint",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr-favs"
-                ],
-                "summary": "Get all favorites or unfavorites",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "UserGuid of the zikr",
-                        "name": "user_guid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "body",
-                        "schema": {
-                            "$ref": "#/definitions/model.Zikrs"
-                        }
-                    },
-                    "400": {
-                        "description": "invalid request body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "failed to retrieve favorites/unfavorites",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/zikr-favs/all-unfavorites": {
-            "get": {
-                "description": "This API retrieves a list of favorite or unfavorite zikrs based on the endpoint",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr-favs"
-                ],
-                "summary": "Get all favorites or unfavorites",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "GUID of the user",
-                        "name": "user_guid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "body",
-                        "schema": {
-                            "$ref": "#/definitions/model.Zikrs"
-                        }
-                    },
-                    "400": {
-                        "description": "invalid request body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "failed to retrieve favorites/unfavorites",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/zikr-favs/favorite": {
-            "patch": {
-                "description": "This API marks zikr as favorite",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr-favs"
-                ],
-                "summary": "Mark zikr as favorite",
-                "parameters": [
-                    {
-                        "description": "body",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Patch"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "updated to favorite",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "invalid request body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "could not update",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/zikr-favs/unfavorite": {
-            "patch": {
-                "description": "This API marks zikr as unfavorite",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr-favs"
-                ],
-                "summary": "Mark zikr as unfavorite",
-                "parameters": [
-                    {
-                        "description": "body",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Patch"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "updated to unfavorite",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "invalid request body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "could not update to unfavorite",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/zikr/count": {
-            "patch": {
-                "description": "This API patches the zikr count",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr"
-                ],
-                "summary": "Patch zikr count",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "GUID of the zikr",
-                        "name": "guid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "GUID of the user",
-                        "name": "user_guid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "count of zikr",
-                        "name": "count",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "count updated",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Zikr not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/zikr/create": {
             "post": {
                 "description": "create-zikr",
@@ -313,91 +75,25 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ZikrSave"
+                            "$ref": "#/definitions/model.Zikr"
                         }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "created",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Error response",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/zikr/delete": {
-            "delete": {
-                "description": "This api Delete zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr"
-                ],
-                "summary": "Delete zikr",
-                "parameters": [
-                    {
-                        "description": "body",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/http.RequestBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/zikr/get": {
-            "get": {
-                "description": "This API gets a zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr"
-                ],
-                "summary": "Get zikr",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "GUID of the zikr",
-                        "name": "guid",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response",
+                        "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/model.GetZikr"
+                            "$ref": "#/definitions/model.Response"
                         }
                     },
-                    "404": {
-                        "description": "Error response",
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "schema": {
                             "type": "string"
                         }
@@ -405,7 +101,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/zikr/list": {
+        "/zikr/get-all": {
             "get": {
                 "description": "This API gets a list of zikr",
                 "consumes": [
@@ -418,6 +114,15 @@ const docTemplate = `{
                     "zikr"
                 ],
                 "summary": "Get zikr list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GUID of the user",
+                        "name": "guid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -433,64 +138,9 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/zikr/update": {
-            "put": {
-                "description": "This API updates a zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr"
-                ],
-                "summary": "Update zikr",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "GUID of the zikr",
-                        "name": "guid",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "body",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Zikr"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "updated",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Error response",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "http.RequestBody": {
-            "type": "object",
-            "properties": {
-                "guid": {
-                    "type": "string"
-                }
-            }
-        },
         "model.GetZikr": {
             "type": "object",
             "properties": {
@@ -503,13 +153,13 @@ const docTemplate = `{
                 "guid": {
                     "type": "string"
                 },
-                "isFavorite": {
+                "is_favorite": {
                     "type": "boolean"
                 },
                 "pronounce": {
                     "type": "string"
                 },
-                "userGuid": {
+                "user_email": {
                     "type": "string"
                 },
                 "uzbek": {
@@ -517,13 +167,10 @@ const docTemplate = `{
                 }
             }
         },
-        "model.Patch": {
+        "model.Response": {
             "type": "object",
             "properties": {
-                "guid": {
-                    "type": "string"
-                },
-                "userGuId": {
+                "result": {
                     "type": "string"
                 }
             }
@@ -554,38 +201,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "pronounce": {
-                    "type": "string"
-                },
-                "uzbek": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.ZikrSave": {
-            "type": "object",
-            "properties": {
-                "arabic": {
-                    "type": "string"
-                },
-                "count": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "guid": {
-                    "type": "string"
-                },
-                "isFavorite": {
-                    "type": "boolean"
-                },
-                "pronounce": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "userGuid": {
                     "type": "string"
                 },
                 "uzbek": {

@@ -30,76 +30,72 @@ func NewZikrHandler(service domain.ZikrUsecase) *zikrHandler {
 // @Accept    json
 // @Produce   json
 // @Param     body body model.Zikr true "body"
-// @Success   201 {string} string "created"
-// @Failure   404 {string} string "Error response"
+// @Success   200   {object} model.Response "success"
+// @Failure   400   {string} string "Invalid request body"
+// @Failure   500   {string} string "Internal server error"
 // @Router    /zikr/create [post]
 func (z *zikrHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var zikr model.Zikr
 	if err := json.NewDecoder(r.Body).Decode(&zikr); err != nil {
-		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "Invalid request body: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	res := z.factory.ParseToControllerForCreate(zikr.Arabic, zikr.Uzbek, zikr.Pronounce)
 	err := z.service.Create(res)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(err)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(model.Response{Result: err.Error()})
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("created"))
+	json.NewEncoder(w).Encode(model.Response{Result: "ok"})
 }
 
-// @Summary  Get zikr
-// @Description This API gets a zikr
-// @Tags      zikr
-// @Accept    json
-// @Produce   json
-// @Param     guid  query string true "GUID of the zikr"
-// @Success   200   {object} model.GetZikr "Successful response"
-// @Failure   404   {string} Error "Error response"
-// @Router    /zikr/get [get]
-func (z *zikrHandler) Get(w http.ResponseWriter, r *http.Request) {
-	guid := r.URL.Query().Get("guid")
-	if guid == "" {
-		http.Error(w, "missing GUID parameter", http.StatusBadRequest)
-		return
-	}
-
-	zikr, err := z.service.Get(guid)
-	if err != nil {
-		http.Error(w, "internal error: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	res := model.GetZikr{
-		Guid:       zikr.Guid,
-		UserEmail:  zikr.UserEmail,
-		Arabic:     zikr.Arabic,
-		Uzbek:      zikr.Uzbek,
-		Pronounce:  zikr.Pronounce,
-		Count:      zikr.Count,
-		IsFavorite: zikr.IsFavorite,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&res)
-}
+//func (z *zikrHandler) Get(w http.ResponseWriter, r *http.Request) {
+//	guid := r.URL.Query().Get("guid")
+//	if guid == "" {
+//		http.Error(w, "missing GUID parameter", http.StatusBadRequest)
+//		return
+//	}
+//
+//	zikr, err := z.service.Get(guid)
+//	if err != nil {
+//		http.Error(w, "internal error: "+err.Error(), http.StatusInternalServerError)
+//		return
+//	}
+//
+//	res := model.GetZikr{
+//		Guid:       zikr.Guid,
+//		UserEmail:  zikr.UserEmail,
+//		Arabic:     zikr.Arabic,
+//		Uzbek:      zikr.Uzbek,
+//		Pronounce:  zikr.Pronounce,
+//		Count:      zikr.Count,
+//		IsFavorite: zikr.IsFavorite,
+//	}
+//
+//	w.Header().Set("Content-Type", "application/json")
+//	w.WriteHeader(http.StatusOK)
+//	json.NewEncoder(w).Encode(&res)
+//}
 
 // @Summary  Get zikr list
 // @Description This API gets a list of zikr
 // @Tags      zikr
 // @Accept    json
 // @Produce   json
+// @Param  guid query string true "GUID of the user"
 // @Success   200 {object} model.Zikrs "Successful response"
 // @Failure   404 {string} string "Error response"
-// @Router    /zikr/list [get]
+// @Router    /zikr/get-all [get]
 func (z *zikrHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
-	zikrs, err := z.service.GetAll()
+	guid := r.URL.Query().Get("guid")
+	zikrs, err := z.service.GetAll(guid)
 	if err != nil {
 		log.Println("failed to retrieve duas : ", err)
 		http.Error(w, "failed to retrieve duas : "+err.Error(), http.StatusNotFound)
@@ -110,7 +106,6 @@ func (z *zikrHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	for _, z := range zikrs {
 		zikr.Zikrs = append(zikr.Zikrs, model.GetZikr{
 			Guid:       z.Guid,
-			UserEmail:  z.UserEmail,
 			Arabic:     z.Arabic,
 			Uzbek:      z.Uzbek,
 			Pronounce:  z.Pronounce,
@@ -124,17 +119,18 @@ func (z *zikrHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(zikr)
 }
 
-// @Summary  Update zikr
-// @Description This API updates a zikr
-// @Tags      zikr
-// @Accept    json
-// @Produce   json
-// @Param     userGuid  query string true "GUID of the user"
-// @Param     zikrGuid  query string true "GUID of the zikr"
-// @Param     body body model.Zikr true "body"
-// @Success   200 {string} string "updated"
-// @Failure   404 {string} string "Error response"
-// @Router    /zikr/update [put]
+// sdffd
+// // @Summary  Update zikr
+// // @Description This API updates a zikr
+// // @Tags      zikr
+// // @Accept    json
+// // @Produce   json
+// // @Param     userGuid  query string true "GUID of the user"
+// // @Param     zikrGuid  query string true "GUID of the zikr"
+// // @Param     body body model.Zikr true "body"
+// // @Success   200 {string} string "updated"
+// // @Failure   404 {string} string "Error response"
+// // @Router    /zikr/update [put]
 func (z *zikrHandler) Update(w http.ResponseWriter, r *http.Request) {
 	userGuid := r.URL.Query().Get("userGuid")
 
@@ -157,18 +153,19 @@ func (z *zikrHandler) Update(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("updated"))
 }
 
-// @Summary  Patch zikr count
-// @Description This API patches the zikr count
-// @Tags      zikr
-// @Accept    json
-// @Produce   json
-// @Param     zikr_guid      query string true "GUID of the zikr"
-// @Param     user_guid query string true "GUID of the user"
-// @Param     count  query string true "count of zikr"
-// @Success   200 {string} string "count updated"
-// @Failure   400 {string} string "Invalid request"
-// @Failure   404 {string} string "Zikr not found"
-// @Router    /zikr/count [patch]
+// zxcds
+// // @Summary  Patch zikr count
+// // @Description This API patches the zikr count
+// // @Tags      zikr
+// // @Accept    json
+// // @Produce   json
+// // @Param     zikr_guid      query string true "GUID of the zikr"
+// // @Param     user_guid query string true "GUID of the user"
+// // @Param     count  query string true "count of zikr"
+// // @Success   200 {string} string "count updated"
+// // @Failure   400 {string} string "Invalid request"
+// // @Failure   404 {string} string "Zikr not found"
+// // @Router    /zikr/count [patch]
 func (z *zikrHandler) PatchCount(w http.ResponseWriter, r *http.Request) {
 	//zikrGuid := r.URL.Query().Get("zikr_guid")
 	//userGuid := r.URL.Query().Get("user_guid")
@@ -194,14 +191,15 @@ func (z *zikrHandler) PatchCount(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(`"count updated"`))
 }
 
-// @Summary Delete zikr
-// @Description This api Delete zikr
-// @Tags zikr
-// @Accept json
-// @Produce json
-// @Param body body RequestBody true "body"
-// @Failure 404 string Error response
-// @Router /zikr/delete [delete]
+// zcz
+// // @Summary Delete zikr
+// // @Description This api Delete zikr
+// // @Tags zikr
+// // @Accept json
+// // @Produce json
+// // @Param body body RequestBody true "body"
+// // @Failure 404 string Error response
+// // @Router /zikr/delete [delete]
 func (z *zikrHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	var requestBody RequestBody
 	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {

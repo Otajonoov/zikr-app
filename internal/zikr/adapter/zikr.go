@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"context"
+	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"time"
 	"zikr-app/internal/zikr/domain"
@@ -21,27 +22,20 @@ func NewZikrRepo(db *pgxpool.Pool) domain.ZikrRepo {
 func (z *zikrRepo) Create(zikr *domain.Zikr) error {
 	query := `
 		INSERT INTO zikr(
-			guid,
-		    user_guid,             
+			guid,            
 		    arabic, 
 		    uzbek, 
-		    pronounce,
-		    count,             
-		    is_favorite,
-		    created_at,
-		    updated_at
+		    pronounce
 		)
-		VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);
+		VALUES($1, $2, $3, $4)
 	`
 
-	_, err := z.db.Exec(context.Background(), query)//zikr.GetGuid(),
-	//zikr.GetUserGUID(),
-	//zikr.GetArabic(),
-	//zikr.GetUzbek(),
-	//zikr.GetPronounce(),
-	//zikr.GetCount(),
-	//zikr.GetIsFavorite(),
-
+	_, err := z.db.Exec(context.Background(), query,
+		zikr.Guid,
+		zikr.Arabic,
+		zikr.Uzbek,
+		zikr.Pronounce,
+	)
 	if err != nil {
 		return err
 	}
@@ -91,46 +85,45 @@ func (z *zikrRepo) Get(guid string) (zikr *domain.Zikr, err error) {
 	return zikr, nil
 }
 
-func (z *zikrRepo) GetAll() (zikrs []domain.Zikr, err error) {
-	//zikr := Zikr{}
-
+func (z *zikrRepo) GetAll(userGuid string) (zikrs []domain.Zikr, err error) {
 	query := `
-		SELECT
-		    z.guid,
-		    z.user_guid,
-		    z.arabic,
-		    z.uzbek,
-		    z.pronounce,
-		    z.count,
-		    z.is_favorite
-		FROM zikr z
-   `
+	SELECT 
+	    z.guid,
+	    z.arabic,
+	    z.uzbek,
+	    z.pronounce,
+	    COALESCE(uz.count, 0) as count,
+	    COALESCE(uz.isFavorite, false) as isFavorite
+	FROM 
+	    zikr z
+	LEFT JOIN 
+	    users_zikr uz ON z.guid = uz.zikr_guid AND uz.zikr_guid = $1`
 
-	rows, err := z.db.Query(context.Background(), query)
+	rows, err := z.db.Query(context.Background(), query, userGuid)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to execute query: %v", err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
+		var zikr domain.Zikr
 		if err := rows.Scan(
-		//&zikr.guid,
-		//&zikr.userGuid,
-		//&zikr.arabic,
-		//&zikr.uzbek,
-		//&zikr.pronounce,
-		//&zikr.count,
-		//&zikr.isFavorite,
+			&zikr.Guid,
+			&zikr.Arabic,
+			&zikr.Uzbek,
+			&zikr.Pronounce,
+			&zikr.Count,
+			&zikr.IsFavorite,
 		); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
+		zikrs = append(zikrs, zikr)
+	}
 
-		//newZikr := z.factory.ParseToDomainSpecial(zikr.guid, zikr.userGuid, zikr.arabic, zikr.uzbek, zikr.pronounce, zikr.count, zikr.isFavorite)
-		//zikrs = append(zikrs, *newZikr)
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows iteration error: %v", err)
 	}
-	if err = rows.Err(); err != nil {
-		return nil, err
-	}
+
 	return zikrs, nil
 }
 
@@ -203,7 +196,7 @@ func (z *zikrRepo) Update(zikr *domain.Zikr) error {
 		WHERE guid = $4
    `
 
-	_, err := z.db.Exec(context.Background(), query)//zikr.GetArabic(),
+	_, err := z.db.Exec(context.Background(), query) //zikr.GetArabic(),
 	//zikr.GetUzbek(),
 	//zikr.GetPronounce(),
 	//zikr.GetGuid(),
@@ -222,7 +215,7 @@ func (z *zikrRepo) UpdateZikrCount(zikr *domain.Zikr) error {
 		WHERE guid = $2 AND user_guid = $3;
 	`
 
-	_, err := z.db.Exec(context.Background(), query)//zikr.GetCount(),
+	_, err := z.db.Exec(context.Background(), query) //zikr.GetCount(),
 	//zikr.GetGuid(),
 	//zikr.GetUserGUID(),
 

@@ -29,7 +29,11 @@ func NewFactory() Factory {
 //}
 
 func (z *Factory) ParseToControllerForCreate(arabik, uzbek, pronounce string) *Zikr {
-	return &Zikr{}
+	return &Zikr{
+		Arabic:    arabik,
+		Uzbek:     uzbek,
+		Pronounce: pronounce,
+	}
 }
 
 func (z *Factory) ParseToDomainToUpdate(guid, arabic, uzbek, pronounce string) *Zikr {

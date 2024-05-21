@@ -12,8 +12,8 @@ type Zikr struct {
 
 type ZikrRepo interface {
 	Create(zikr *Zikr) error
-	Get(guid string) (zikr *Zikr, err error)
-	GetAll() (zikrs []Zikr, err error)
+	//Get(guid string) (zikr *Zikr, err error)
+	GetAll(guid string) (zikrs []Zikr, err error)
 	GetUserZikrByMail(email, username string) (zikrs []Zikr, err error)
 	Update(zikr *Zikr) error
 	UpdateZikrCount(zikr *Zikr) error
@@ -29,8 +29,8 @@ type ZikrFavoritesRepository interface {
 
 type ZikrUsecase interface {
 	Create(zikr *Zikr) error
-	Get(guid string) (zikr *Zikr, err error)
-	GetAll() (zikrs []Zikr, err error)
+	//Get(guid string) (zikr *Zikr, err error)
+	GetAll(guid string) (zikrs []Zikr, err error)
 	Update(zikr *Zikr) error
 	UpdateZikrCount(zikr *Zikr) error
 	Delete(guid string) error

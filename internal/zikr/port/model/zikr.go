@@ -1,23 +1,13 @@
 package model
 
-import "time"
-
 type Zikr struct {
 	Arabic    string `json:"arabic"`
 	Uzbek     string `json:"uzbek"`
 	Pronounce string `json:"pronounce"`
 }
 
-type ZikrSave struct {
-	Guid       string
-	UserGuid   string
-	Arabic     string
-	Uzbek      string
-	Pronounce  string
-	Count      int
-	IsFavorite bool
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+type Response struct {
+	Result string `json:"result"`
 }
 
 type PatchCount struct {
@@ -26,7 +16,6 @@ type PatchCount struct {
 
 type GetZikr struct {
 	Guid       string `json:"guid"`
-	UserEmail  string `json:"user_email"`
 	Arabic     string `json:"arabic"`
 	Uzbek      string `json:"uzbek"`
 	Pronounce  string `json:"pronounce"`
@@ -35,5 +24,5 @@ type GetZikr struct {
 }
 
 type Zikrs struct {
-	Zikrs []GetZikr
+	Zikrs []GetZikr `json:"zikrs"`
 }

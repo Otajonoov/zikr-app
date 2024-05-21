@@ -56,8 +56,8 @@ func New(option RouterOption) *chi.Mux {
 	// Zikr
 	router.Route("/zikr", func(r chi.Router) {
 		r.Post("/create", zikrHandler.Create)
-		r.Get("/get", zikrHandler.Get)
-		r.Get("/list", zikrHandler.GetAll)
+		//r.Get("/get", zikrHandler.Get)
+		r.Get("/get-all", zikrHandler.GetAll)
 		r.Put("/update", zikrHandler.Update)
 		r.Patch("/count", zikrHandler.PatchCount)
 		r.Delete("/delete", zikrHandler.Delete)

@@ -17,10 +17,9 @@ func (u *BaseUseCase) Error(msg string, err error) error {
 }
 
 func (u *BaseUseCase) beforeRequestForZikr(zikr *domain.Zikr) {
-
-	//if zikr.GetGuid() == "" {
-	//	zikr.SetGuid(uuid.New().String())
-	//}
+	if zikr.Guid == "" {
+		zikr.Guid = uuid.New().String()
+	}
 
 }
 

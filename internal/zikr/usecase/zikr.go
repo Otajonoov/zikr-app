@@ -27,18 +27,18 @@ func (z *zikrUsecase) Create(zikr *domain.Zikr) error {
 	return nil
 }
 
-func (z *zikrUsecase) Get(guid string) (zikr *domain.Zikr, err error) {
+//func (z *zikrUsecase) Get(guid string) (zikr *domain.Zikr, err error) {
+//
+//	//zikr, err = z.repo.Get(guid)
+//	//if err != nil {
+//	//	return &domain.Zikr{}, err
+//	//}
+//	//
+//	return zikr, nil
+//}
 
-	zikr, err = z.repo.Get(guid)
-	if err != nil {
-		return &domain.Zikr{}, err
-	}
-
-	return zikr, nil
-}
-
-func (z *zikrUsecase) GetAll() (zikrs []domain.Zikr, err error) {
-	zikrs, err = z.repo.GetAll()
+func (z *zikrUsecase) GetAll(guid string) (zikrs []domain.Zikr, err error) {
+	zikrs, err = z.repo.GetAll(guid)
 	if err != nil {
 		return nil, err
 	}
