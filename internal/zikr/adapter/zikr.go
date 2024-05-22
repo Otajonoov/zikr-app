@@ -89,15 +89,15 @@ func (z *zikrRepo) Get(guid string) (zikr *domain.Zikr, err error) {
 
 func (z *zikrRepo) GetAll(userGuid string) (zikrs []domain.Zikr, err error) {
 	query := `
-		SELECT 	
-		    z.guid,	 
-		    z.arabic,
-		    z.uzbek,
-		    z.pronounce,
-		    coalesce(uz.count, 0) as count,
-		    coalesce(uz.isFavorite, false) as isFavorite
-		FROM zikr z 
-		FULL JOIN users_zikr uz on z.guid = uz.zikr_guid AND uz.user_guid = $1;`
+		SELECT       
+            z.guid, 
+            z.arabic,
+            z.uzbek,
+            z.pronounce,
+            coalesce(uz.count, 0) as count,
+            coalesce(uz.isFavorite, false) as isFavorite
+        FROM zikr z 
+        FULL JOIN users_zikr uz on z.guid = uz.zikr_guid`
 
 	rows, err := z.db.Query(context.Background(), query)
 	if err != nil {
