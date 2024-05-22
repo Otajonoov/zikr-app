@@ -75,7 +75,7 @@ func (z *zikrHandler) Create(w http.ResponseWriter, r *http.Request) {
 //		Arabic:     zikr.Arabic,
 //		Uzbek:      zikr.Uzbek,
 //		Pronounce:  zikr.Pronounce,
-//		Count:      zikr.Count,
+//		UsersZikr:      zikr.UsersZikr,
 //		IsFavorite: zikr.IsFavorite,
 //	}
 //

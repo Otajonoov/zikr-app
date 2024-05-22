@@ -16,8 +16,8 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/count": {
-            "post": {
-                "description": "This API create zikr count",
+            "patch": {
+                "description": "This API updates zikr count",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,9 +25,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "count"
+                    "zikr-count"
                 ],
-                "summary": "Create zikr count",
+                "summary": "Update zikr count",
                 "parameters": [
                     {
                         "description": "account info",
@@ -53,9 +53,11 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/favorite": {
             "patch": {
-                "description": "This API updates zikr count",
+                "description": "This API marks zikr as favorite",
                 "consumes": [
                     "application/json"
                 ],
@@ -63,29 +65,35 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "count"
+                    "zikr-favorite"
                 ],
-                "summary": "Update zikr count",
+                "summary": "Mark zikr as favorite",
                 "parameters": [
                     {
-                        "description": "account info",
+                        "description": "body",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Count"
+                            "$ref": "#/definitions/model.IsFavorite"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response",
+                        "description": "updated to favorite",
                         "schema": {
-                            "$ref": "#/definitions/model.Response"
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request body",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "could not update",
                         "schema": {
                             "type": "string"
                         }
@@ -250,6 +258,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "uzbek": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.IsFavorite": {
+            "type": "object",
+            "properties": {
+                "is_favorite": {
+                    "type": "boolean"
+                },
+                "user_guid": {
+                    "type": "string"
+                },
+                "zikr_guid": {
                     "type": "string"
                 }
             }

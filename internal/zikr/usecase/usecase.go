@@ -29,7 +29,7 @@ func (u *BaseUseCase) beforeRequestForUser(user *domain.User) {
 	}
 }
 
-func (u *BaseUseCase) beforeRequestForCount(count *domain.Count) {
+func (u *BaseUseCase) beforeRequestForCount(count *domain.UsersZikr) {
 	if count.Guid == "" {
 		count.Guid = uuid.New().String()
 	}

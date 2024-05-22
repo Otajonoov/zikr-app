@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"log"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/domain/factory"
 )
@@ -16,38 +17,10 @@ func NewZikrFavoritesUsecase(repo domain.ZikrFavoritesRepository) domain.ZikrFav
 	}
 }
 
-func (z zikrFavoritesUsecase) FavoriteDua(userId, zikrId string) (bool, error) {
-	ok, err := z.repo.FavoriteDua(userId, zikrId)
-	if err != nil {
-		return false, err
+func (z zikrFavoritesUsecase) Update(userId, zikrId string, isFavorite bool) error {
+	if err := z.repo.Update(userId, zikrId, isFavorite); err != nil {
+		log.Println("err: ", err)
+		return err
 	}
-
-	return ok, nil
-}
-
-func (z zikrFavoritesUsecase) UnFavoriteDua(userId, zikrId string) (bool, error) {
-	ok, err := z.repo.UnFavoriteDua(userId, zikrId)
-	if err != nil {
-		return false, err
-	}
-
-	return ok, nil
-}
-
-func (z zikrFavoritesUsecase) GetAllFavorites(userId string) (zikrs []domain.Zikr, err error) {
-	favorites, err := z.repo.GetAllFavorites(userId)
-	if err != nil {
-		return nil, err
-	}
-
-	return favorites, nil
-}
-
-func (z zikrFavoritesUsecase) GetAllUnFavorites(userId string) (zikrs []domain.Zikr, err error) {
-	favorites, err := z.repo.GetAllUnFavorites(userId)
-	if err != nil {
-		return nil, err
-	}
-
-	return favorites, nil
+	return nil
 }

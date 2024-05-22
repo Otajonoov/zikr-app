@@ -17,38 +17,9 @@ func NewCountHandler(u domain.CountUsecase) *CountHandler {
 	return &CountHandler{usecase: u}
 }
 
-// @Summary 	Create zikr count
-// @Description This API create zikr count
-// @Tags 		count
-// @Accept 		json
-// @Produce 	json
-// @Param body  body model.Count true "account info"
-// @Success   200 {object} model.Response "Successful response"
-// @Failure 404 string Error response
-// @Router /count [post]
-func (c *CountHandler) Create(w http.ResponseWriter, r *http.Request) {
-	var req model.Count
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		http.Error(w, "invalid request body: "+err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	userInfo := c.factory.ParseToDomainForCount(req.UserGuid, req.ZikrGuid, req.Count)
-	err = c.usecase.Create(userInfo)
-	if err != nil {
-		http.Error(w, "bad credentials: "+err.Error(), http.StatusNotFound)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(model.Response{Result: "ok"})
-}
-
 // @Summary 	Update zikr count
 // @Description This API updates zikr count
-// @Tags 		count
+// @Tags 		zikr-count
 // @Accept 		json
 // @Produce 	json
 // @Param body  body model.Count true "account info"

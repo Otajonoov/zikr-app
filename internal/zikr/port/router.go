@@ -38,19 +38,19 @@ func New(option RouterOption) *chi.Mux {
 	authRepo := adapter.NewAuthRepo(option.DB)
 	zikrRepo := adapter.NewZikrRepo(option.DB)
 	countRpo := adapter.NewCountRepo(option.DB)
-	//zikrFavoriteRepo := adapter.NewZikrFavoritesRepo(option.DB)
+	zikrFavoriteRepo := adapter.NewZikrFavoritesRepo(option.DB)
 
 	// Usecase
 	authUsecase := usecase.NewAuthUsecase(authRepo, zikrRepo)
 	zikrUsecase := usecase.NewZikrUsecase(zikrRepo)
 	countUseCase := usecase.NewCountUsecase(countRpo)
-	//zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo)
+	zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo)
 
 	// Handlers
 	authHandler := handler.NewAuthHandler(authUsecase)
 	zikrHandler := handler.NewZikrHandler(zikrUsecase)
 	countHandler := handler.NewCountHandler(countUseCase)
-	//zikrFavoriteHandler := handler.NewZikrFavoriteHandler(zikrFavoriteUseCase)
+	zikrFavoriteHandler := handler.NewZikrFavoriteHandler(zikrFavoriteUseCase)
 
 	// User registration
 	router.Route("/user", func(r chi.Router) {
@@ -61,23 +61,21 @@ func New(option RouterOption) *chi.Mux {
 	router.Route("/zikr", func(r chi.Router) {
 		r.Post("/", zikrHandler.Create)
 		r.Get("/", zikrHandler.GetAll)
-		r.Put("/update", zikrHandler.Update)
-		r.Patch("/count", zikrHandler.PatchCount)
-		r.Delete("/delete", zikrHandler.Delete)
+
+		//r.Put("/update", zikrHandler.Update)
+		//r.Patch("/count", zikrHandler.PatchCount)
+		//r.Delete("/delete", zikrHandler.Delete)
 	})
 
+	// Zikr count
 	router.Route("/count", func(r chi.Router) {
-		r.Post("/", countHandler.Create)
 		r.Patch("/", countHandler.Count)
 	})
 
-	//// Zikr favorites
-	//router.Route("/zikr-favs", func(r chi.Router) {
-	//	r.Patch("/favorite", zikrFavoriteHandler.ToggleFavorite)
-	//	r.Patch("/unfavorite", zikrFavoriteHandler.ToggleUnFavorite)
-	//	r.Get("/all-favorites", zikrFavoriteHandler.GetAllFavorites)
-	//	r.Get("/all-unfavorites", zikrFavoriteHandler.GetAllUnFavorites)
-	//})
+	// Zikr favorites
+	router.Route("/favorite", func(r chi.Router) {
+		r.Patch("/", zikrFavoriteHandler.Update)
+	})
 
 	router.Get("/swagger/*", httpSwagger.Handler())
 	return router

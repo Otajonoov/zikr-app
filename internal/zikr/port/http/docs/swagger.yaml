@@ -23,6 +23,15 @@ definitions:
       uzbek:
         type: string
     type: object
+  model.IsFavorite:
+    properties:
+      is_favorite:
+        type: boolean
+      user_guid:
+        type: string
+      zikr_guid:
+        type: string
+    type: object
   model.Response:
     properties:
       result:
@@ -85,32 +94,37 @@ paths:
             type: string
       summary: Update zikr count
       tags:
-      - count
-    post:
+      - zikr-count
+  /favorite:
+    patch:
       consumes:
       - application/json
-      description: This API create zikr count
+      description: This API marks zikr as favorite
       parameters:
-      - description: account info
+      - description: body
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.Count'
+          $ref: '#/definitions/model.IsFavorite'
       produces:
       - application/json
       responses:
         "200":
-          description: Successful response
-          schema:
-            $ref: '#/definitions/model.Response'
-        "404":
-          description: Not Found
+          description: updated to favorite
           schema:
             type: string
-      summary: Create zikr count
+        "400":
+          description: invalid request body
+          schema:
+            type: string
+        "404":
+          description: could not update
+          schema:
+            type: string
+      summary: Mark zikr as favorite
       tags:
-      - count
+      - zikr-favorite
   /user:
     post:
       consumes:

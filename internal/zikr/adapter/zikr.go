@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
-	"time"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/domain/factory"
 )
@@ -94,8 +93,8 @@ func (z *zikrRepo) GetAll(userGuid string) (zikrs []domain.Zikr, err error) {
             z.arabic,
             z.uzbek,
             z.pronounce,
-            coalesce(uz.count, 0) as count,
-            coalesce(uz.isFavorite, false) as isFavorite
+    		COALESCE(uz.zikr_count, 0) AS count,
+    		COALESCE(uz.isFavorite, false) AS isFavorite
         FROM zikr z 
         LEFT JOIN users_zikr uz on z.guid = uz.zikr_guid
 		AND uz.user_guid = $1`
@@ -126,68 +125,6 @@ func (z *zikrRepo) GetAll(userGuid string) (zikrs []domain.Zikr, err error) {
 		return nil, fmt.Errorf("rows iteration error: %v", err)
 	}
 
-	log.Println("zikrs: ", zikrs)
-
-	return zikrs, nil
-}
-
-func (z *zikrRepo) GetUserZikrByMail(email, username string) ([]domain.Zikr, error) {
-	query := `
-		SELECT 
-			z.guid,
-			z.user_guid,
-			z.arabic,
-			z.uzbek,
-			z.pronounce,
-			z.count,
-			z.is_favorite,
-			z.created_at,
-			z.updated_at
-		FROM zikr z
-		INNER JOIN 
-			users u ON u.guid = z.user_guid
-		WHERE u.email = $1 AND u.unique_username = $2`
-
-	rows, err := z.db.Query(context.Background(), query, email, username)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var zikrs []domain.Zikr
-	for rows.Next() {
-		var (
-			guid       string
-			userGUID   string
-			arabic     string
-			uzbek      string
-			pronounce  string
-			count      int
-			isFavorite bool
-			createdAt  time.Time
-			updatedAt  time.Time
-		)
-		if err := rows.Scan(
-			&guid,
-			&userGUID,
-			&arabic,
-			&uzbek,
-			&pronounce,
-			&count,
-			&isFavorite,
-			&createdAt,
-			&updatedAt,
-		); err != nil {
-			return nil, err
-		}
-		//zikrDomain := z.factory.ParseToDomain(guid, userGUID, arabic, uzbek, pronounce, count, isFavorite, createdAt, updatedAt)
-		//zikrs = append(zikrs, *zikrDomain)
-	}
-
-	if rows.Err() != nil {
-		return nil, rows.Err()
-	}
-
 	return zikrs, nil
 }
 
@@ -204,24 +141,6 @@ func (z *zikrRepo) Update(zikr *domain.Zikr) error {
 	//zikr.GetUzbek(),
 	//zikr.GetPronounce(),
 	//zikr.GetGuid(),
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (z *zikrRepo) UpdateZikrCount(zikr *domain.Zikr) error {
-	query := `
-		UPDATE zikr 
-		SET count = count + $1 
-		WHERE guid = $2 AND user_guid = $3;
-	`
-
-	_, err := z.db.Exec(context.Background(), query) //zikr.GetCount(),
-	//zikr.GetGuid(),
-	//zikr.GetUserGUID(),
 
 	if err != nil {
 		return err

@@ -19,27 +19,12 @@ func NewCountRepo(db *pgxpool.Pool) *countRepo {
 	}
 }
 
-func (u *countRepo) Create(count *domain.Count) error {
-	query := `
-		INSERT INTO users_zikr
-			(guid, user_guid, zikr_guid, count)
-		VALUES
-			($1, $2, $3, $4)`
-
-	_, err := u.db.Exec(context.Background(), query, count.Guid, count.UserGuid, count.ZikrGuid, count.Count)
-	if err != nil {
-		log.Printf("failed to execute insert: %v", err)
-		return err
-	}
-	return nil
-}
-
-func (u *countRepo) CountUpdate(count *domain.Count) error {
+func (u *countRepo) CountUpdate(count *domain.UsersZikr) error {
 	query := `
 		UPDATE 
 		    users_zikr 
 		SET 
-		    count = $1 	
+		    zikr_count = $1 	
 		WHERE 
 		    user_guid = $2 AND zikr_guid = $3`
 

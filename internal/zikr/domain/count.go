@@ -1,18 +1,25 @@
 package domain
 
-type Count struct {
-	Guid     string
-	UserGuid string
-	ZikrGuid string
-	Count    int64
+type UsersZikr struct {
+	Guid       string
+	UserGuid   string
+	ZikrGuid   string
+	Count      int64
+	IsFavorite bool
 }
 
 type CountRepo interface {
-	Create(count *Count) error
-	CountUpdate(count *Count) error
+	CountUpdate(count *UsersZikr) error
 }
 
 type CountUsecase interface {
-	Create(count *Count) error
-	CountUpdate(count *Count) error
+	CountUpdate(count *UsersZikr) error
+}
+
+type ZikrFavoritesRepository interface {
+	Update(userId, zikrId string, isFavorite bool) error
+}
+
+type ZikrFavoritesUsecase interface {
+	Update(userId, zikrId string, isFavorite bool) error
 }

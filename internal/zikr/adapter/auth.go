@@ -63,3 +63,50 @@ func (u authRepo) GetUserInfo(ctx context.Context, email string) (string, error)
 
 	return guid, nil
 }
+
+func (u authRepo) GetAllZikrGuid(ctx context.Context) ([]domain.Guid, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	guids := []domain.Guid{}
+	query := `
+		SELECT
+			z.guid
+		FROM zikr z
+	`
+
+	rows, err := u.db.Query(ctx, query)
+	if err != nil {
+		log.Println("err: ", err)
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var guid domain.Guid
+		if err := rows.Scan(&guid.Guid); err != nil {
+			log.Println("err: ", err)
+			return nil, err
+		}
+		guids = append(guids, guid)
+	}
+
+	return guids, nil
+}
+
+func (u authRepo) CreateZikrsForUser(ctx context.Context, userGuid, zikrGuid string) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	query := `
+		INSERT INTO users_zikr(
+			user_guid,
+			zikr_guid     
+		) VALUES ($1, $2)`
+	_, err := u.db.Exec(ctx, query, userGuid, zikrGuid)
+	if err != nil {
+		log.Println("err: ", err)
+		return err
+	}
+
+	return nil
+}

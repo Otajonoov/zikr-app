@@ -28,16 +28,6 @@ func (z *zikrUsecase) Create(zikr *domain.Zikr) error {
 	return nil
 }
 
-//func (z *zikrUsecase) Get(guid string) (zikr *domain.Zikr, err error) {
-//
-//	//zikr, err = z.repo.Get(guid)
-//	//if err != nil {
-//	//	return &domain.Zikr{}, err
-//	//}
-//	//
-//	return zikr, nil
-//}
-
 func (z *zikrUsecase) GetAll(guid string) (zikrs []domain.Zikr, err error) {
 	zikrs, err = z.repo.GetAll(guid)
 	if err != nil {
@@ -52,14 +42,6 @@ func (z *zikrUsecase) Update(zikr *domain.Zikr) error {
 		return err
 	}
 	//zikr.SetUpdatedAt(time.Now())
-	return nil
-}
-
-func (z *zikrUsecase) UpdateZikrCount(updateZikr *domain.Zikr) error {
-	err := z.repo.UpdateZikrCount(updateZikr)
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
