@@ -97,9 +97,10 @@ func (z *zikrRepo) GetAll(userGuid string) (zikrs []domain.Zikr, err error) {
             coalesce(uz.count, 0) as count,
             coalesce(uz.isFavorite, false) as isFavorite
         FROM zikr z 
-        FULL JOIN users_zikr uz on z.guid = uz.zikr_guid`
+        LEFT JOIN users_zikr uz on z.guid = uz.zikr_guid
+		AND uz.user_guid = $1`
 
-	rows, err := z.db.Query(context.Background(), query)
+	rows, err := z.db.Query(context.Background(), query, userGuid)
 	if err != nil {
 		log.Println("err: ", err)
 		return nil, fmt.Errorf("failed to execute query: %v", err)
