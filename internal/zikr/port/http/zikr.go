@@ -34,7 +34,7 @@ func NewZikrHandler(service domain.ZikrUsecase) *zikrHandler {
 // @Success   200   {object} model.Response "success"
 // @Failure   400   {string} string "Invalid request body"
 // @Failure   500   {string} string "Internal server error"
-// @Router    /zikr/create [post]
+// @Router    /zikr [post]
 func (z *zikrHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var zikr model.Zikr
 	if err := json.NewDecoder(r.Body).Decode(&zikr); err != nil {
@@ -92,7 +92,7 @@ func (z *zikrHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Param  guid query string true "GUID of the user"
 // @Success   200 {object} model.Zikrs "Successful response"
 // @Failure   404 {string} string "Error response"
-// @Router    /zikr/get-all [get]
+// @Router    /zikr [get]
 func (z *zikrHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	guid := r.URL.Query().Get("guid")

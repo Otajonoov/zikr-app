@@ -111,7 +111,7 @@ paths:
       summary: Create zikr count
       tags:
       - count
-  /user/create-user:
+  /user:
     post:
       consumes:
       - application/json
@@ -136,8 +136,32 @@ paths:
             type: string
       summary: Get or Create user
       tags:
-      - User
-  /zikr/create:
+      - user
+  /zikr:
+    get:
+      consumes:
+      - application/json
+      description: This API gets a list of zikr
+      parameters:
+      - description: GUID of the user
+        in: query
+        name: guid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.Zikrs'
+        "404":
+          description: Error response
+          schema:
+            type: string
+      summary: Get zikr list
+      tags:
+      - zikr
     post:
       consumes:
       - application/json
@@ -165,31 +189,6 @@ paths:
           schema:
             type: string
       summary: Create zikr
-      tags:
-      - zikr
-  /zikr/get-all:
-    get:
-      consumes:
-      - application/json
-      description: This API gets a list of zikr
-      parameters:
-      - description: GUID of the user
-        in: query
-        name: guid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful response
-          schema:
-            $ref: '#/definitions/model.Zikrs'
-        "404":
-          description: Error response
-          schema:
-            type: string
-      summary: Get zikr list
       tags:
       - zikr
 swagger: "2.0"

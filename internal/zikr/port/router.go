@@ -54,14 +54,13 @@ func New(option RouterOption) *chi.Mux {
 
 	// User registration
 	router.Route("/user", func(r chi.Router) {
-		r.Post("/create-user", authHandler.CheckUserRegister)
+		r.Post("/", authHandler.CheckUserRegister)
 	})
 
 	// Zikr
 	router.Route("/zikr", func(r chi.Router) {
-		r.Post("/create", zikrHandler.Create)
-		//r.Get("/get", zikrHandler.Get)
-		r.Get("/get-all", zikrHandler.GetAll)
+		r.Post("/", zikrHandler.Create)
+		r.Get("/", zikrHandler.GetAll)
 		r.Put("/update", zikrHandler.Update)
 		r.Patch("/count", zikrHandler.PatchCount)
 		r.Delete("/delete", zikrHandler.Delete)

@@ -93,7 +93,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/create-user": {
+        "/user": {
             "post": {
                 "description": "register-user",
                 "consumes": [
@@ -103,7 +103,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "user"
                 ],
                 "summary": "Get or Create user",
                 "parameters": [
@@ -133,7 +133,43 @@ const docTemplate = `{
                 }
             }
         },
-        "/zikr/create": {
+        "/zikr": {
+            "get": {
+                "description": "This API gets a list of zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "zikr"
+                ],
+                "summary": "Get zikr list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GUID of the user",
+                        "name": "guid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikrs"
+                        }
+                    },
+                    "404": {
+                        "description": "Error response",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "create-zikr",
                 "consumes": [
@@ -172,44 +208,6 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/zikr/get-all": {
-            "get": {
-                "description": "This API gets a list of zikr",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "zikr"
-                ],
-                "summary": "Get zikr list",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "GUID of the user",
-                        "name": "guid",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "schema": {
-                            "$ref": "#/definitions/model.Zikrs"
-                        }
-                    },
-                    "404": {
-                        "description": "Error response",
                         "schema": {
                             "type": "string"
                         }

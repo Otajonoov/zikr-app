@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"log"
 	"time"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/domain/factory"
@@ -88,20 +89,19 @@ func (z *zikrRepo) Get(guid string) (zikr *domain.Zikr, err error) {
 
 func (z *zikrRepo) GetAll(userGuid string) (zikrs []domain.Zikr, err error) {
 	query := `
-	SELECT 
-	    z.guid,
-	    z.arabic,
-	    z.uzbek,
-	    z.pronounce,
-	    COALESCE(uz.count, 0) as count,
-	    COALESCE(uz.isFavorite, false) as isFavorite
-	FROM 
-	    zikr z
-	LEFT JOIN 
-	    users_zikr uz ON z.guid = uz.zikr_guid AND uz.zikr_guid = $1`
+		SELECT 	
+		    z.guid,	 
+		    z.arabic,
+		    z.uzbek,
+		    z.pronounce,
+		    coalesce(uz.count, 0) as count,
+		    coalesce(uz.isFavorite, false) as isFavorite
+		FROM zikr z 
+		FULL JOIN users_zikr uz on z.guid = uz.zikr_guid AND uz.user_guid = $1;`
 
-	rows, err := z.db.Query(context.Background(), query, userGuid)
+	rows, err := z.db.Query(context.Background(), query)
 	if err != nil {
+		log.Println("err: ", err)
 		return nil, fmt.Errorf("failed to execute query: %v", err)
 	}
 	defer rows.Close()
@@ -124,6 +124,8 @@ func (z *zikrRepo) GetAll(userGuid string) (zikrs []domain.Zikr, err error) {
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("rows iteration error: %v", err)
 	}
+
+	log.Println("zikrs: ", zikrs)
 
 	return zikrs, nil
 }
