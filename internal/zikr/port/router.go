@@ -8,8 +8,8 @@ import (
 	"zikr-app/internal/zikr/adapter"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/domain/factory"
-	handler "zikr-app/internal/zikr/port/http"
 	_ "zikr-app/internal/zikr/port/http/docs"
+	"zikr-app/internal/zikr/port/http/v1"
 	"zikr-app/internal/zikr/usecase"
 )
 
@@ -39,18 +39,21 @@ func New(option RouterOption) *chi.Mux {
 	zikrRepo := adapter.NewZikrRepo(option.DB)
 	countRpo := adapter.NewCountRepo(option.DB)
 	zikrFavoriteRepo := adapter.NewZikrFavoritesRepo(option.DB)
+	appVersionRepo := adapter.NewAppVersionRepo(option.DB)
 
 	// Usecase
 	authUsecase := usecase.NewAuthUsecase(authRepo, zikrRepo)
 	zikrUsecase := usecase.NewZikrUsecase(zikrRepo)
 	countUseCase := usecase.NewCountUsecase(countRpo)
 	zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo)
+	appVersionUseCase := usecase.NewAppVersionUsecase(appVersionRepo)
 
 	// Handlers
-	authHandler := handler.NewAuthHandler(authUsecase)
-	zikrHandler := handler.NewZikrHandler(zikrUsecase)
-	countHandler := handler.NewCountHandler(countUseCase)
-	zikrFavoriteHandler := handler.NewZikrFavoriteHandler(zikrFavoriteUseCase)
+	authHandler := v1.NewAuthHandler(authUsecase)
+	zikrHandler := v1.NewZikrHandler(zikrUsecase)
+	countHandler := v1.NewCountHandler(countUseCase)
+	zikrFavoriteHandler := v1.NewZikrFavoriteHandler(zikrFavoriteUseCase)
+	appVersionHandler := v1.NewAppVersionHandler(appVersionUseCase)
 
 	// User registration
 	router.Route("/user", func(r chi.Router) {
@@ -75,6 +78,12 @@ func New(option RouterOption) *chi.Mux {
 	// Zikr favorites
 	router.Route("/favorite", func(r chi.Router) {
 		r.Patch("/", zikrFavoriteHandler.Update)
+	})
+
+	// App version
+	router.Route("/app-version", func(r chi.Router) {
+		r.Get("/", appVersionHandler.GetAppVersion)
+		r.Put("/", appVersionHandler.Update)
 	})
 
 	router.Get("/swagger/*", httpSwagger.Handler())

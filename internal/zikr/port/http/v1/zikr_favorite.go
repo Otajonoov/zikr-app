@@ -1,4 +1,4 @@
-package http
+package v1
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"zikr-app/internal/zikr/domain"
 	"zikr-app/internal/zikr/domain/factory"
-	"zikr-app/internal/zikr/port/model"
+	"zikr-app/internal/zikr/port/http/model"
 )
 
 type zikrFavoriteHandler struct {

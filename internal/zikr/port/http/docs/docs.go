@@ -15,6 +15,73 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/app-version": {
+            "get": {
+                "description": "This API gets app version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "app-version"
+                ],
+                "summary": "Get app version",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/model.AppVersion"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "This API updates app version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "app-version"
+                ],
+                "summary": "Update app version",
+                "parameters": [
+                    {
+                        "description": "app version",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AppVersion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/model.AppVersion"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/count": {
             "patch": {
                 "description": "This API updates zikr count",
@@ -225,6 +292,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.AppVersion": {
+            "type": "object",
+            "properties": {
+                "android_version": {
+                    "type": "string"
+                },
+                "force_update": {
+                    "type": "boolean"
+                },
+                "ios_version": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Count": {
             "type": "object",
             "properties": {

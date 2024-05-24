@@ -9,3 +9,11 @@ func (z *Factory) ParseToDomainForCount(userGuid, zikrGuid string, count int64) 
 		Count:    count,
 	}
 }
+
+func (z *Factory) ParseToDomainForAppVersion(androidVersion, iosVersion string, forceUpdate bool) *domain.AppVersion {
+	return &domain.AppVersion{
+		AndroidVersion: androidVersion,
+		IosVersion:     iosVersion,
+		ForceUpdate:    forceUpdate,
+	}
+}

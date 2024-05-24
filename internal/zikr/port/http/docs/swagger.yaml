@@ -1,4 +1,13 @@
 definitions:
+  model.AppVersion:
+    properties:
+      android_version:
+        type: string
+      force_update:
+        type: boolean
+      ios_version:
+        type: string
+    type: object
   model.Count:
     properties:
       count:
@@ -69,6 +78,50 @@ info:
   contact: {}
   description: Created by Otajonov Quvonchbek and Usmonov Azizbek
 paths:
+  /app-version:
+    get:
+      consumes:
+      - application/json
+      description: This API gets app version
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.AppVersion'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get app version
+      tags:
+      - app-version
+    put:
+      consumes:
+      - application/json
+      description: This API updates app version
+      parameters:
+      - description: app version
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.AppVersion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.AppVersion'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Update app version
+      tags:
+      - app-version
   /count:
     patch:
       consumes:
