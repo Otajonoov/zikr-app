@@ -20,13 +20,13 @@ func NewAuthHandler(u domain.AuthUsecase) *AuthHandler {
 
 // @Summary 	Get or Create user
 // @Description register-user
-// @Tags 		user
+// @Tags 		auth
 // @Accept 		json
 // @Produce 	json
 // @Param body  body model.UserLoginRequest true "account info"
 // @Success   200 {object} model.UserGuid "Successful response"
 // @Failure 404 string Error response
-// @Router /user [post]
+// @Router /auth [post]
 func (u *AuthHandler) CheckUserRegister(w http.ResponseWriter, r *http.Request) {
 	var req model.UserLoginRequest
 

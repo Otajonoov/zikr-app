@@ -46,6 +46,27 @@ definitions:
       result:
         type: string
     type: object
+  model.Reyting:
+    properties:
+      limit:
+        default: 10
+        type: integer
+      page:
+        default: 1
+        type: integer
+      zikr_guid:
+        type: string
+    required:
+    - limit
+    - page
+    type: object
+  model.ReytingResponse:
+    properties:
+      reytings:
+        items:
+          $ref: '#/definitions/model.Reyting'
+        type: array
+    type: object
   model.UserGuid:
     properties:
       guid:
@@ -122,63 +143,7 @@ paths:
       summary: Update app version
       tags:
       - app-version
-  /count:
-    patch:
-      consumes:
-      - application/json
-      description: This API updates zikr count
-      parameters:
-      - description: account info
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.Count'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful response
-          schema:
-            $ref: '#/definitions/model.Response'
-        "404":
-          description: Not Found
-          schema:
-            type: string
-      summary: Update zikr count
-      tags:
-      - zikr-count
-  /favorite:
-    patch:
-      consumes:
-      - application/json
-      description: This API marks zikr as favorite
-      parameters:
-      - description: body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.IsFavorite'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: updated to favorite
-          schema:
-            type: string
-        "400":
-          description: invalid request body
-          schema:
-            type: string
-        "404":
-          description: could not update
-          schema:
-            type: string
-      summary: Mark zikr as favorite
-      tags:
-      - zikr-favorite
-  /user:
+  /auth:
     post:
       consumes:
       - application/json
@@ -203,7 +168,100 @@ paths:
             type: string
       summary: Get or Create user
       tags:
-      - user
+      - auth
+  /users-zikr/count:
+    patch:
+      consumes:
+      - application/json
+      description: This API updates zikr count
+      parameters:
+      - description: account info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Count'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Update zikr count
+      tags:
+      - users-zikr
+  /users-zikr/favorite:
+    patch:
+      consumes:
+      - application/json
+      description: This API update zikr favorite
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.IsFavorite'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated to favorite
+          schema:
+            type: string
+        "400":
+          description: invalid request body
+          schema:
+            type: string
+        "404":
+          description: could not update
+          schema:
+            type: string
+      summary: Update zikr favorite
+      tags:
+      - users-zikr
+  /users-zikr/reyting:
+    get:
+      consumes:
+      - application/json
+      description: This API count zikr
+      parameters:
+      - default: 10
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - default: 1
+        in: query
+        name: page
+        required: true
+        type: integer
+      - in: query
+        name: zikr_guid
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/model.ReytingResponse'
+        "400":
+          description: invalid request body
+          schema:
+            type: string
+        "404":
+          description: could not update
+          schema:
+            type: string
+      summary: Count zikr
+      tags:
+      - users-zikr
   /zikr:
     get:
       consumes:

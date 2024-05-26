@@ -37,53 +37,44 @@ func New(option RouterOption) *chi.Mux {
 	// Repos
 	authRepo := adapter.NewAuthRepo(option.DB)
 	zikrRepo := adapter.NewZikrRepo(option.DB)
-	countRpo := adapter.NewCountRepo(option.DB)
-	zikrFavoriteRepo := adapter.NewZikrFavoritesRepo(option.DB)
+	usersZikrRepo := adapter.NewCountRepo(option.DB)
 	appVersionRepo := adapter.NewAppVersionRepo(option.DB)
 
 	// Usecase
 	authUsecase := usecase.NewAuthUsecase(authRepo, zikrRepo)
 	zikrUsecase := usecase.NewZikrUsecase(zikrRepo)
-	countUseCase := usecase.NewCountUsecase(countRpo)
-	zikrFavoriteUseCase := usecase.NewZikrFavoritesUsecase(zikrFavoriteRepo)
+	usersZikrtUseCase := usecase.NewCountUsecase(usersZikrRepo)
 	appVersionUseCase := usecase.NewAppVersionUsecase(appVersionRepo)
 
 	// Handlers
 	authHandler := v1.NewAuthHandler(authUsecase)
 	zikrHandler := v1.NewZikrHandler(zikrUsecase)
-	countHandler := v1.NewCountHandler(countUseCase)
-	zikrFavoriteHandler := v1.NewZikrFavoriteHandler(zikrFavoriteUseCase)
+	usersZikrHandler := v1.NewCountHandler(usersZikrtUseCase)
 	appVersionHandler := v1.NewAppVersionHandler(appVersionUseCase)
 
 	// User registration
-	router.Route("/user", func(r chi.Router) {
+	router.Route("/auth", func(r chi.Router) {
 		r.Post("/", authHandler.CheckUserRegister)
-	})
-
-	// Zikr
-	router.Route("/zikr", func(r chi.Router) {
-		r.Post("/", zikrHandler.Create)
-		r.Get("/", zikrHandler.GetAll)
-
-		//r.Put("/update", zikrHandler.Update)
-		//r.Patch("/count", zikrHandler.PatchCount)
-		//r.Delete("/delete", zikrHandler.Delete)
-	})
-
-	// Zikr count
-	router.Route("/count", func(r chi.Router) {
-		r.Patch("/", countHandler.Count)
-	})
-
-	// Zikr favorites
-	router.Route("/favorite", func(r chi.Router) {
-		r.Patch("/", zikrFavoriteHandler.Update)
 	})
 
 	// App version
 	router.Route("/app-version", func(r chi.Router) {
 		r.Get("/", appVersionHandler.GetAppVersion)
 		r.Put("/", appVersionHandler.Update)
+	})
+
+	// Zikr
+	router.Route("/zikr", func(r chi.Router) {
+		r.Post("/", zikrHandler.Create)
+		r.Get("/", zikrHandler.GetAll)
+	})
+
+	// Users Zikr
+	router.Route("/users-zikr", func(r chi.Router) {
+		r.Patch("/count", usersZikrHandler.Count)
+		r.Patch("/favorite", usersZikrHandler.Update)
+		r.Get("/reyting", usersZikrHandler.Reyting)
+
 	})
 
 	router.Get("/swagger/*", httpSwagger.Handler())

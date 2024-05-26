@@ -82,7 +82,47 @@ const docTemplate = `{
                 }
             }
         },
-        "/count": {
+        "/auth": {
+            "post": {
+                "description": "register-user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get or Create user",
+                "parameters": [
+                    {
+                        "description": "account info",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserGuid"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users-zikr/count": {
             "patch": {
                 "description": "This API updates zikr count",
                 "consumes": [
@@ -92,7 +132,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "zikr-count"
+                    "users-zikr"
                 ],
                 "summary": "Update zikr count",
                 "parameters": [
@@ -122,9 +162,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/favorite": {
+        "/users-zikr/favorite": {
             "patch": {
-                "description": "This API marks zikr as favorite",
+                "description": "This API update zikr favorite",
                 "consumes": [
                     "application/json"
                 ],
@@ -132,9 +172,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "zikr-favorite"
+                    "users-zikr"
                 ],
-                "summary": "Mark zikr as favorite",
+                "summary": "Update zikr favorite",
                 "parameters": [
                     {
                         "description": "body",
@@ -168,9 +208,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
-            "post": {
-                "description": "register-user",
+        "/users-zikr/reyting": {
+            "get": {
+                "description": "This API count zikr",
                 "consumes": [
                     "application/json"
                 ],
@@ -178,29 +218,45 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "users-zikr"
                 ],
-                "summary": "Get or Create user",
+                "summary": "Count zikr",
                 "parameters": [
                     {
-                        "description": "account info",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.UserLoginRequest"
-                        }
+                        "type": "integer",
+                        "default": 10,
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "zikr_guid",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Successful response",
                         "schema": {
-                            "$ref": "#/definitions/model.UserGuid"
+                            "$ref": "#/definitions/model.ReytingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request body",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "could not update",
                         "schema": {
                             "type": "string"
                         }
@@ -362,6 +418,37 @@ const docTemplate = `{
             "properties": {
                 "result": {
                     "type": "string"
+                }
+            }
+        },
+        "model.Reyting": {
+            "type": "object",
+            "required": [
+                "limit",
+                "page"
+            ],
+            "properties": {
+                "limit": {
+                    "type": "integer",
+                    "default": 10
+                },
+                "page": {
+                    "type": "integer",
+                    "default": 1
+                },
+                "zikr_guid": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReytingResponse": {
+            "type": "object",
+            "properties": {
+                "reytings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Reyting"
+                    }
                 }
             }
         },

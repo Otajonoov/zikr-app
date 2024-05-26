@@ -8,18 +8,30 @@ type UsersZikr struct {
 	IsFavorite bool
 }
 
-type CountRepo interface {
+type ReytingInfo struct {
+	UserGuid  string
+	Username  string
+	ZikrCount int64
+}
+
+type ReytingResponse struct {
+	Reyting []ReytingInfo
+}
+
+type Reyting struct {
+	Limit    int64
+	Page     int64
+	ZikrGuid string
+}
+
+type UsersZikrRepo interface {
 	CountUpdate(count *UsersZikr) error
+	Update(userId, zikrId string, isFavorite bool) error
+	Reyting(reyting *Reyting) (reytings *ReytingResponse, err error)
 }
 
-type CountUsecase interface {
+type UsersZikrUseCase interface {
 	CountUpdate(count *UsersZikr) error
-}
-
-type ZikrFavoritesRepository interface {
 	Update(userId, zikrId string, isFavorite bool) error
-}
-
-type ZikrFavoritesUsecase interface {
-	Update(userId, zikrId string, isFavorite bool) error
+	Reyting(reyting *Reyting) (reytings *ReytingResponse, err error)
 }
