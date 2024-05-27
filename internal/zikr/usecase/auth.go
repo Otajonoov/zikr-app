@@ -57,7 +57,6 @@ func (a *authUseCase) GetOrCreateUser(ctx context.Context, req *domain.User) (st
 				log.Println("err: ", err)
 			}
 		}
-
 		guid = u
 	}
 

@@ -301,6 +301,51 @@ const docTemplate = `{
                     }
                 }
             },
+            "put": {
+                "description": "This API updates a zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "zikr"
+                ],
+                "summary": "Update zikr",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GUID of the zikr",
+                        "name": "zikrId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Zikr"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Error response",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "create-zikr",
                 "consumes": [
@@ -339,6 +384,36 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "This api Delete zikr",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "zikr"
+                ],
+                "summary": "Delete zikr",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "GUID of the zikr",
+                        "name": "zikrId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "string"
                         }

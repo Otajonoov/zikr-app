@@ -137,11 +137,7 @@ func (z *zikrRepo) Update(zikr *domain.Zikr) error {
 		WHERE guid = $4
    `
 
-	_, err := z.db.Exec(context.Background(), query) //zikr.GetArabic(),
-	//zikr.GetUzbek(),
-	//zikr.GetPronounce(),
-	//zikr.GetGuid(),
-
+	_, err := z.db.Exec(context.Background(), query, zikr.Arabic, zikr.Uzbek, zikr.Pronounce, zikr.Guid)
 	if err != nil {
 		return err
 	}

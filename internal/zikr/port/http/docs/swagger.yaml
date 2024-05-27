@@ -263,6 +263,26 @@ paths:
       tags:
       - users-zikr
   /zikr:
+    delete:
+      consumes:
+      - application/json
+      description: This api Delete zikr
+      parameters:
+      - description: GUID of the zikr
+        in: query
+        name: zikrId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Delete zikr
+      tags:
+      - zikr
     get:
       consumes:
       - application/json
@@ -314,6 +334,36 @@ paths:
           schema:
             type: string
       summary: Create zikr
+      tags:
+      - zikr
+    put:
+      consumes:
+      - application/json
+      description: This API updates a zikr
+      parameters:
+      - description: GUID of the zikr
+        in: query
+        name: zikrId
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.Zikr'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated
+          schema:
+            type: string
+        "404":
+          description: Error response
+          schema:
+            type: string
+      summary: Update zikr
       tags:
       - zikr
 swagger: "2.0"
